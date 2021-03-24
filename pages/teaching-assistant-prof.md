@@ -7,7 +7,7 @@ I firmly believe that education in all its forms can greatly empower individuals
 
 Below you will find select notes from courses that I have taught.
 
-### Data Analysis Course Notes
+## Data Analysis Course Notes
 
 [Accessing and Importing Data, Data Wrangling](https://uofi.box.com/shared/static/rzi2rynx5j3o1u9us7qkzrb7vwpueal8.html)
 
@@ -27,7 +27,7 @@ Below you will find select notes from courses that I have taught.
 
 [Shiny + Mapping with geojSON, ggplot, Leaflet, and Plotly](https://uofi.box.com/shared/static/44nsy8yurfbbk7sej5m0a72wf4gfl5cv.r)
 
-### Data Management Course Notes
+## Data Management Course Notes
 
 [Accessing and importing data, Exploring file formats and extensions, Formatting data](https://uofi.box.com/shared/static/te4phvnshgyysburg8hifs5059u2yk54.html)
 
@@ -41,7 +41,7 @@ Below you will find select notes from courses that I have taught.
 
 [Data workers and their reponsibilities, My thoughts on the work of data workers, Issues in data usage, A data management set of morals](https://uofi.box.com/shared/static/86x5mwmefxbchb65j00gew57zmcrwyw9.html)
 
-### R Programming Course Notes
+## R Programming Course Notes
 
 [Discuss and demonstrate RStudio, RMarkdown, Markdown, Git, and GitHub](https://uofi.box.com/shared/static/ryxwpcs1rrg67nxta7tr1vpup16ug233.html)
 
