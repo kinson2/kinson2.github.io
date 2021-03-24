@@ -1,4 +1,7 @@
-# Reach Out to Me
+---
+layout: page
+title: Reach Out to Me
+---
 
 *If you are a student or colleague at Illinois, please email me directly, but do not complete the form below.*
 
