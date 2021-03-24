@@ -1,7 +1,7 @@
 ---
 layout: page
 title: DJing
-image: 
+image: chris-djing01.JPG
 ---
 
 # The Blackest Hour
