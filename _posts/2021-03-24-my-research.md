@@ -18,7 +18,7 @@ My statistical methodology research interests are dimension reduction techniques
 
 My statistics education and pedagogy research interests center on technologically-enhanced learning, student engagement, and agency inside of the classroom. Specific methods of interest are continuous management systems, paired programming, reproducibility in the course workflow and classroom, and POC-student placemaking in the statistics discipline. I strongly believe in increasing efforts to recruit, retain, and sustain underrepresented students in STEM. You can find my scholarly activity below.
 
-- Presentation: Christopher Kinson and David Dalpiaz (2021) Using GitHub in the Classroom: A VERZUZ Battle, United States Conference on Teaching Statistics. https://www.causeweb.org/cause/uscots/uscots21/program/breakouts 
+- Presentation: Christopher Kinson and David Dalpiaz (2021) Using GitHub in the Classroom: A VERZUZ Battle, United States Conference on Teaching Statistics.
 
 - Poster: Christopher Kinson and David Unger (2019) Real DataSETs: Student Engagement Techniques for the Advanced Data Analysis Course, United States Conference on Teaching Statistics, P1-11. https://www.causeweb.org/cause/uscots/uscots19/posters/1-11
 
