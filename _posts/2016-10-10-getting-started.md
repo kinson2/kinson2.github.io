@@ -1,13 +1,11 @@
 ---
 layout: post
-title: "Getting Started"
-author: "Paul Le"
+title: "Doing Data Science Locally"
 categories: DDSL
 tags: [DDSL]
 image: plot-main02.png
 ---
 
-# Doing Data Science Locally
 Because I enjoy working with data and thinking about how it is used, I make time to play with real data. So why not play with real data that is related to where I live and work? Cities and locales across the country have been making data publicly available as a part of civic responsibility and transparency. Urbana, Champaign, and the state of Illinois each offer publicly available data that have attracted few eyes, especially those with a background in data science and statistics. Let's change that today!
 
 ## [Champaign County Sheriff's Office and Jail Data](https://data.illinois.gov/dataset/jail-booking-data/resource/dfcad952-67cc-4ff3-8be0-0312c25ec8e1)
@@ -17,10 +15,10 @@ The dataset contains individuals who were booked into the Champaign County Jail 
 Here's an example of crafting better data visualizations with this data using base R (not the tidyverse). **See N. Yau's Data Points, C. Knaflic's Storytelling with Data, and E. Tufte's The Visual Display of Quantitative Information for more ideas.**
 
 ***Not Good***
-![image-bad](https://uofi.box.com/shared/static/ndrw5diqej89rcvak5tj0hza69htja6v.png) 
+![not-good](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/plot-main01.png) 
 
 ***Better***
-![image-good](https://uofi.box.com/shared/static/597ji3w1s1hz3c46pxp6dnsyi0u7iqsj.png)
+![better](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/plot-main02.png)
 
 I also want to highlight data visualizations as opportunities for asking questions. For this data, I might want to know what circumstances are leading to the bookings for the ethnic and racial groups? How long are certain groups spending in jail? When people do get out of jail, what was the means for their release? Is there an association with the reasons people are booked into jail and the reasons for their release?
 
@@ -206,7 +204,7 @@ Now for a more serious topic: jail and COVID-19. As the pandemic progresses and 
 
 If I consider only people booked into jail beginning in 2020, I might ask the following... How long are they there before being released? What is the population per day in general and among the different racial and ethnic groups? How does the current jail population compare to last year's?
 
-![](https://uofi.box.com/shared/static/wmkint4ldwi76ftvnnttynbydzqegsvf.png)
+![](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/plot-main03.png)
 
 One thing to notice from this visualization is that the number of people remaining in jail as time progresses is trending upwards regardless of race/ethnicity. I would hope that the trend would be decreasing, but since it's not what might be causing this trend. Obviously, the people remaining in jail either have later release dates than July 31, 2020 or no release dates at all. Is the population remaining in jail due to severity of crime or some other underlying cause?
 
@@ -219,12 +217,12 @@ The dataset contains rental properties throughout Urbana that have been inspecte
 A question I might have for this data is: do rental properties closer to campus tend to have higher grades? My thought is that Urbana-Champaign is a college town (or towns if considered separately). The bulk of dollars spent might come from students given their large enrollment (typically speaking) of 40,000 or so. Thus, any business or landlord should do their best to please students by offering superior housing.
 
 Here's a map of the rentals for this dataset.
-![](https://uofi.box.com/shared/static/571ml946je8f02avwhakhkeryafubcfx.png)
+![](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/plot-main04.png)
 
 I'll define "closer to campus" as within a 1 mile radius of the Illini Union, which is located at 1401 W Green St, Urbana, IL 61801 or (40.109399, -88.227244). I'll use the haversine distance metric to determine how far the rentals are from the Illini Union. Any rentals within 1 mile will be identified by a blue symbol, while the Illini Union will be identified with a orange symbol. With the two groups of rentals (closer to campus vs not closer to campus), I'll compute basic statistics about the grades in order to find tendency toward higher grades.
 
 A new map and table might look like this.
-![](https://uofi.box.com/shared/static/t0djpvaifqvdk5cn5y86nh3olole0b7m.png)
+![](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/plot-main05.png)
 
 <table class="table table-striped table-hover" style="margin-left: auto; margin-right: auto;">
  <thead>
@@ -306,6 +304,6 @@ So are students compromising the quality of their living spaces? Are landlords t
 ## 2020 Election Vote By Mail Data
 The 2020 election - much like everything else that happened this year - was like no other. The COVID-19 pandemic spurred creative and preventative measures of casting ballots and voting early and without physically showing up to the polls. Thanks to the Office of the Champaign County Clerk, we are able to access data about the process of voting by mail. This data included individual information and dates for when the ballot was requested by individual, sent by clerk's office, and received by clerk's office. One of my concerns with the data was that my wife never received her ballot in the mail even though the data says that it was sent by the clerk's office. I wondered: how many ballots had been requested but not received by the clerk's office?
 
-![](https://uofi.box.com/shared/static/qw1s77n16kohft9fmg9m8jq4guekuj8z.png)
+![](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/plot-main06.png)
 
 According to the data, there were 7140 vote-by-mail ballots unaccounted for by November 2, 2020. I use the phrase "unaccounted for", because there is no received date for these individuals in the data, yet these same individuals had requested the vote-by-mail ballot. As we all saw, the election results have been contested several times and even some states re-counted their ballots with results unchanged. Regardless of the results, I think we need better tracking and security for the vote-by-mail process. We should also demand more accountability from our mail carriers, government employees, and public officials when people's ballots disappear. Mail carriers have had a tremendous amount of pressure placed upon them during this pandemic and I certainly hope they are being supported and cared for as essential workers.
