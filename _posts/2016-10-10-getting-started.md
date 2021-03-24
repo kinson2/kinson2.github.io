@@ -17,14 +17,14 @@ The dataset contains individuals who were booked into the Champaign County Jail 
 Here's an example of crafting better data visualizations with this data using base R (not the tidyverse). **See N. Yau's Data Points, C. Knaflic's Storytelling with Data, and E. Tufte's The Visual Display of Quantitative Information for more ideas.**
 
 ***Not Good***
-![](https://uofi.box.com/shared/static/ndrw5diqej89rcvak5tj0hza69htja6v.png) 
+![image-bad](https://uofi.box.com/shared/static/ndrw5diqej89rcvak5tj0hza69htja6v.png) 
 
 ***Better***
-![](https://uofi.box.com/shared/static/597ji3w1s1hz3c46pxp6dnsyi0u7iqsj.png)
+![image-good](https://uofi.box.com/shared/static/597ji3w1s1hz3c46pxp6dnsyi0u7iqsj.png)
 
 I also want to highlight data visualizations as opportunities for asking questions. For this data, I might want to know what circumstances are leading to the bookings for the ethnic and racial groups? How long are certain groups spending in jail? When people do get out of jail, what was the means for their release? Is there an association with the reasons people are booked into jail and the reasons for their release?
 
-Beyond examples of data visualizations for graphical design and exploration, I also investigate (problem-posing, planning, data wrangling, analyzing, concluding) it. *See [C.J. Wild and M. Pfannkuch's PPDAC Investigative Cycle](https://iase-web.org/documents/intstatreview/99.Wild.Pfannkuch.pdf) for more information.*
+Beyond examples of data visualizations for graphical design and exploration, I also investigate (problem-posing, planning, data wrangling, analyzing, concluding) it. **See [C.J. Wild and M. Pfannkuch's PPDAC Investigative Cycle](https://iase-web.org/documents/intstatreview/99.Wild.Pfannkuch.pdf) for more information.**
 
 For example, the cities in this dataset are mostly in east central Illinois.
 
