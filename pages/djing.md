@@ -1,10 +1,11 @@
 ---
 layout: page
 title: DJing
-image: chris-djing01.JPG
 ---
 
 # The Blackest Hour
+
+![](chris-djing01.JPG)
 
 As DJ CK, I host a one-hour radio program called "The Blackest Hour" where I blend music and sounds of the African diaspora including Black traditional music such as hip-hop, jazz, rock and roll, funk, R&B, soul, house, and techno, as well as traditional and contemporary music originating in Africa but heard around the world such as reggae, reggaeton, salsa, bachata, kizomba, kuduro, highlife, alte, rhumba, and much more. 
 
