@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "My Research"
+author: "Christopher Kinson"
 image: city-2.jpg
 ---
 
