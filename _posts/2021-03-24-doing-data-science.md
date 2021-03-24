@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Doing Data Science Locally"
+author: "Christopher Kinson"
 categories: DDSL
 tags: [DDSL]
 image: plot-main02.png
