@@ -8,7 +8,7 @@ google-ID: ''
 
 menu:
 - {name: 'Teaching Assistant Professor', folder: 'pages', file: 'teaching-assistant-prof.html'}
-- {name: 'DJing', folder: 'pages', file: 'djing.html'}
+- {name: 'DJ', folder: 'pages', file: 'djing.html'}
 - {name: 'Reach Out to Me', folder: 'pages', file: 'reach-out.html'}
 
 # Available social icons are powered by Font Awesome, so you can use any icon that they offer
