@@ -3,4 +3,6 @@ layout: misc
 title: Contact
 ---
 
-This theme is completely free and open source software. You may use it however you want, as it is distributed under the [MIT License](http://choosealicense.com/licenses/mit/). If you are having any problems, any questions or suggestions, feel free to [tweet at me](https://twitter.com/intent/tweet?text=My%question%about%Millennial%is:%&amp;via=paululele), or [file a GitHub issue](https://github.com/lenpaul/Millennial/issues/new).
+*If you are a student or colleague at Illinois, please email me directly instead of completing this form.*
+
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeJehOVFxerzSdcxO--sZn3kKNyFeix3sfEiT0IAqcxV0r_Cg/viewform?embedded=true" width="640" height="703" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
