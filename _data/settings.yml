@@ -8,7 +8,6 @@ google-ID: ''
 
 menu:
 - {name: 'Teaching Assistant Professor', folder: 'pages', file: 'teaching-assistant-prof.html'}
-- {name: 'Doing Data Science Locally', folder: 'pages', file: 'doing-data-science.html'}
 - {name: 'DJing', folder: 'pages', file: 'djing.html'}
 - {name: 'Reach Out to Me', folder: 'pages', file: 'reach-out.html'}
 
