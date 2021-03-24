@@ -11,7 +11,7 @@ menu:
 - {name: 'Doing Data Science Locally', folder: 'pages', file: 'doing-data-science.html'}
 - {name: 'DJing', folder: 'pages', file: 'djing.html'}
 - {name: 'Genealogy', folder: 'pages', file: 'genealogy.html'}
-- {name: 'Contact', folder: 'pages', file: 'contact.html'}
+- {name: 'Reach Out to Me', folder: 'pages', file: 'reach-out.html'}
 
 # Available social icons are powered by Font Awesome, so you can use any icon that they offer
 #social:
