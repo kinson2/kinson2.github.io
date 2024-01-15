@@ -34,6 +34,16 @@
   @include social-media-icon($linkedin-color, $icon-transition-time);
 }
 
+.fa-mixcloud {
+  padding: 5px;
+  @include social-media-icon($mixcloud-color, $icon-transition-time);
+}
+
+.fa-soundcloud {
+  padding: 5px;
+  @include social-media-icon($soundcloud-color, $icon-transition-time);
+}
+
 .fa-facebook {
   padding: 5px;
   @include social-media-icon($facebook-color, $icon-transition-time);
