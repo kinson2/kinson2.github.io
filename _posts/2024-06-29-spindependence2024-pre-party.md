@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "An Amapiano Mix"
+title: "A Mostly Amapiano Mix"
 author: "Christopher Kinson"
 categories: dj
 tags: [dj, about]
