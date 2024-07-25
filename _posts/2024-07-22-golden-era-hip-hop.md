@@ -4,10 +4,10 @@ title: "Spinning Hip-Hop from the Golden Era"
 author: "Christopher Kinson"
 categories: dj
 tags: [dj, about]
-image: golden-era-hip-hip-multi.png
+image: golden-era-hip-hop-multi.png
 ---
 
-I'm spinning with my good friend and mentor Stacey BLACKSTAR Robinson on Saturday July 27, 2024 at 10:00pm inside Gallery Art Bar in Urbana, IL. It's basically a Darker Than Blue affair since Warren Mixzn Smith is spinning outside at Gallery Art Bar at 8:00 pm. The music is hip-hop from 1973-1999. I'm sticking to time frame closely. 
+I'm spinning with my good friend and mentor Stacey BLACKSTAR Robinson on Saturday July 27, 2024 at 10:00pm inside Gallery Art Bar in Urbana, IL. It's basically a Darker Than Blue affair since Warren Mixzn Smith is spinning outside at Gallery Art Bar at 8:00 pm. The music is hip-hop from 1973-1999. I'm sticking to this time frame very closely, even though I was born in 1988. 
 
 DJ Kool Herc's party (the one with the infamous flyer) is from the year 1973. See this article in Essence Magazine by Okla Jones [https://www.essence.com/entertainment/the-block-party-where-hip-hop-was-born-1973/](https://www.essence.com/entertainment/the-block-party-where-hip-hop-was-born-1973/) as an example.
 
