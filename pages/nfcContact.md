@@ -4,7 +4,7 @@ title: Contactless Contact
 permalink: /nfcContact
 ---
 # Christopher Kinson
-![image of Christopher Kinson](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/associate-cropped-smaller-github.png)
+![image of Christopher Kinson](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/associate-cropped-smaller-github2.png)
 ## Phone
 111-111-1111
 ## Email
