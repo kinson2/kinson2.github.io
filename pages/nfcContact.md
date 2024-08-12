@@ -1,3 +1,8 @@
+---
+layout: page
+title: Contactless Contact
+permalink: /nfcContact
+---
 # Christopher Kinson
 ![image of Christopher Kinson](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/IMG_8560-edit.jpg)
 ## Phone
