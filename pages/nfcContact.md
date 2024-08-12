@@ -1,7 +1,7 @@
-# Contactless Contact
-[image of Christopher Kinson]()
+# Christopher Kinson
+![image of Christopher Kinson](https://github.com/kinson2/kinson2.github.io/raw/gh-pages/assets/img/IMG_8560-edit.jpg)
 ## Phone
-
+111-111-1111
 ## Email
 ckinson13@gmail.com
 ## Link Tree 
