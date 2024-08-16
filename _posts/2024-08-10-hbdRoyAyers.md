@@ -24,6 +24,4 @@ He's one of only a few Americans to tour and collaborate with [Afrobeat pioneer 
 He made the soundtrack for the blaxpolitation film, Coffy, which stars Pam Grier. Need I say more.
 
 Check out this Tiny Desk performance by the legend himself.
-<iframe width="420" height="315"
-src="https://youtu.be/CghK8iVUHBs?si=V6waqat2YpbMo8na)">
-</iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CghK8iVUHBs?si=V6waqat2YpbMo8na" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
