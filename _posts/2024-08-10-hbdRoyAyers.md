@@ -7,7 +7,9 @@ tags: [dj, about]
 image: happy-birthday-roy-ayers-flyer2024.png
 ---
 
-On September 10 9:00pm-11:00pm indoors at Rose Bowl Tavern, I'm spinning the vibey tunes of the great Roy Ayers to celebrate his music and legacy. He's a creative tour de force and no one brings out the feel-good vibes like him. You're sure to hear the hits and rarities, maybe even a few songs he's influenced. It's going to be chill and fun. I might have a bday cake too. Come thru and relax for a bit.
+On September 10 9:00pm-11:00pm indoors at Rose Bowl Tavern, I'm spinning the vibey tunes of the great Roy Ayers to celebrate his the music and legacy as well as his birthday! He's a creative tour de force and no one brings out the feel-good vibes like him. You're sure to hear the hits and rarities, maybe even a few songs he's influenced. It's going to be chill and fun. I might have a bday cake too. Come thru and relax for a bit.
+
+![Facebook event page for Happy Birthday Roy Ayers](https://fb.me/e/7wP3FthJA)
 
 Let me start by saying that I'm a lover of Roy Ayers music catalog. He is the epitome of vibes, as a world-class vibraphonist, and his music oozes soulful harmonies that make me dance and think at the same time.
 
