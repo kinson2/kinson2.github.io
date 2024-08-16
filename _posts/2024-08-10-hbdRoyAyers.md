@@ -25,5 +25,5 @@ He made the soundtrack for the blaxpolitation film, Coffy, which stars Pam Grier
 
 Check out this Tiny Desk performance by the legend himself.
 <iframe width="420" height="315"
-src="https://www.youtube.com/embed/watch?v=CghK8iVUHBs">
+src="https://youtu.be/CghK8iVUHBs?si=V6waqat2YpbMo8na)">
 </iframe>
