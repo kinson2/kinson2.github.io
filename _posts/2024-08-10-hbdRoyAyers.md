@@ -22,3 +22,8 @@ He's one of only a few Americans to tour and collaborate with [Afrobeat pioneer 
 [He's featured on GTA IV!](https://youtu.be/WUNq2a5zroA?si=kr1sLJ3x9m5H7EM7)
 
 He made the soundtrack for the blaxpolitation film, Coffy, which stars Pam Grier. Need I say more.
+
+Check out this Tiny Desk performance by the legend himself.
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/watch?v=CghK8iVUHBs">
+</iframe>
