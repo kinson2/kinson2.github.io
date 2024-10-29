@@ -7,8 +7,8 @@ tags: [dancer, dj]
 image: kizoma-dancing-nomad-flyer.jpg
 ---
 
-**I'm teaching a kizomba dance lesson on Saturday November 2, 2024, 8:00pm-09:00pm at the Nomad Lounge located at 308 N Randolph St in Champaign, IL.**
+**I'm teaching kizomba as a dance lesson prior to the salsa social on Saturday November 2, 2024, 8:00pm-09:00pm at the Nomad Lounge located at 308 N Randolph St in Champaign, IL.**
 
 It's been about 7 years since I dance kizomba regularly and taught it as a dance form in Champaign-Urbana. I'm happy to say that I am bringing it back (at least for one night)!
 
-My friend and co-instructor from back then, Kat Kolumban, is teaching with me, so it's truly a full circle moment. She's coming in from Indy and she's been teaching kiomba there religiously since leaving Chambana.
+My friend and co-instructor from back then, Kat Kolumban, is teaching with me, so it's truly a full circle moment. She's coming in from Indy and she's been teaching kizomba there religiously since leaving Chambana.
