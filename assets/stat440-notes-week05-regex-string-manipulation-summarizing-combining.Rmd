@@ -1,0 +1,367 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Notes
+### Created by Christopher Kinson
+
+
+***
+
+### Table of Contents
+
+- [Regular Expressions and String Manipulation](#regex)  
+  - [Regex and String Manipulation Examples with City of Urbana's Rental Inspection Grades Listing Data](#examples)
+- [Summarizing data](#summarizing)
+  - [Grouped Processing in base R](#grouped-processing-baser)
+  - [Grouped Processing in tidyverse](#grouped-processing-tidyverse)
+- [Combining Data](#combining)
+  - [Concatenating](#concatenating)
+  - [Binding](#binding)
+  - [Merging](#merging)
+  - [Combining Data Examples with City of Urbana's Rental Inspection Grades Listing Data](#examples2)
+      
+***
+
+
+## <a name="regex"></a>Regular Expressions and String Manipulation
+
+In this section, we discuss typical operations for string manipulation and subsetting based on characters. Character strings can be quite difficult to wrangle. This difficulty may be due to character encoding and differences in how computers interpret strings. One alleviation of this difficulty was conceptualized in the 1950s by Stephen Kleene called regular expressions (or regex for short). A regular expression is a standardized pattern for finding strings and characters. Regex exists separate from programming languages (much like SQL) and is usually incorporated via a library or module. 
+
+Regex can be used to pick out or match certain characters in a character vector, and this is helpful for subsetting strings. Regex can be used in R within the `tidyverse` package thanks to the `stringr` package. Read more here [R for Data Science - Strings](https://r4ds.had.co.nz/strings.html) and [Tidyverse's stringr](https://stringr.tidyverse.org/). Below is a table containing common regex syntax for finding characters and strings. The table's example is the following sentence: 
+
+    "Friends of the Geese are hosting a memorial service Saturday for the 175 geese killed this week by the Urbana Park District in its 'charity harvest.'"
+
+Regex Syntax | Explanation | Matching String Found
+---|---|---|
+\\\\w |any letter or digit | "FriendsoftheGeesearehostingamemorialserviceSaturdayforthe175"
+\\\\d | any digit | "175"
+[\\\\.\\\\'] | only the period and apostrophe | "'.'"
+[^\\.] | anything but not the period | "Friends of the Geese are hosting a memorial service Saturday for the 175 geese killed this week by the Urbana Park District in its 'charity harvest'"
+[A-M] | anything with capital letters A-M| "FriendsGeeseDistrict"
+s+ | any words or characters with the letter s and anything after the s| "FriendsGeesehostingservicegeesethisDistrictitsharvest"
+s+\|S+ | any words or characters with the letter s or capital S and anything after the s or capital S | "FriendsGeesehostingserviceSaturdaygeesethisDistrictitsharvest"
+e{2} | any word with exactly two consecutive letter e| "Geesegeeseweek"
+
+See https://regexr.com/ for more regex syntax and opportunities to test out regular expressions.
+
+Below is an R code chunk as evidence of the regex usage along with some **stringr** package functions. These **stringr** functions are vectorized and return a value for each element in the input vector:
+
+- `str_extract`: extracts the matched pattern
+
+- `str_extract_all`: extracts multiple matched patterns (returns either a list `simplify=TRUE` or a matrix `simplify=FALSE`)
+
+- `str_remove`: removes the matched pattern
+
+- `str_remove_all`: removes multiple matched patterns
+
+- `str_replace`: replaces the matched pattern with another string
+
+- `str_replace_all`: replaces multiple matched patterns with another string
+
+- `str_count`: counts the number of times the pattern is matched
+
+- `str_detect`: returns TRUE when the pattern is matched and FALSE otherwise
+
+**Notice that we need to use not one escape character `\`, but two `\\` to access special regex characters or explicit punctuation in R.**
+
+```{r}
+library(tidyverse)
+ss <- "Friends of the Geese are hosting a memorial service Saturday for the 175 geese killed this week by the Urbana Park District in its 'charity harvest.'"
+str_extract(ss, "\\w")
+str_extract_all(ss, "\\w")
+str_extract_all(ss, "[^\\.]")
+str_remove(ss, "\\.\\'")
+str_remove(ss, "\\d")
+str_remove_all(ss, "\\d")
+str_remove(ss, "[A-M]")
+str_remove_all(ss, "[A-M]")
+str_replace(ss, "s+|S+", "Que")
+str_replace_all(ss, "s+|S+", "Que")
+str_count(ss, "e{2}")
+str_detect(ss, "[A-M]")
+```
+
+Read the documentation for each of the above **stringr** functions, because they have some additional arguments that may be helpful.
+
+### <a name="examples"></a>Regex and string manipulation examples with City of Urbana's Rental Inspection Grades Listing Data
+
+Working with the City of Urbana's [Rental Inspection Grades Listing Data as tab-separated .txt](https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt), we can finally explain what we did to the "Mappable Address" column in the Reshaping data notes.
+
+```{r}
+RentalsData <- read_delim("https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt", delim="\t")
+
+slice_head(RentalsData, n=10)
+```
+
+First, we used **stringr**'s `str_split()` function to separate the character strings originally found in "Mappable Address" into 3 columns, where `\n` is the separator that determined how to split them up.
+
+```{r}
+Coordinates<-str_split(RentalsData$`Mappable Address`, "\\\n", simplify = TRUE)
+head(Coordinates, n=10)
+tail(Coordinates, n=10)
+```
+
+Notice that several of the first few addresses in `Coordinates` are written with the string "1 2" in the first column. These are addresses which have "1/2" units - a common designation for apartments or very small residences. We can use `str_replace()` to find all "1 2" strings and replace them with `1/2" strings.
+
+```{r}
+Coordinates[,1] <- str_replace(Coordinates[,1],"1\\s2","1/2")
+head(Coordinates)
+tail(Coordinates)
+```
+
+We can see some elements of the second column of `Coordinates` are not simply "Urbana, IL", but contain specific apartment numbers or unit numbers.
+
+```{r}
+sum(!is.na(str_extract(Coordinates[,2],"[^Urbana\\,\\sIL]")))
+```
+
+Let's mutate with 2 new columns: City which should always be equal to "Urbana" and State which will always equal "IL" and de-select the second column. This means that Coordinates will now have 4 columns total.
+
+```{r}
+Coordinates <- as_tibble(Coordinates) %>%
+  mutate(City="Urbana", State="IL") %>%
+  select(-V2)
+
+head(Coordinates)
+
+tail(Coordinates)
+```
+
+Now, there is trouble with the now second column of `Coordinates` (which is now a **tibble**). 
+
+Do *you* see trouble? 
+
+You probably do not recognize the issue, but some elements of the second column have the GPS coordinates - representing latitude and longitude - in the incorrect position. Urbana's centralized coordinates are 40.10972, -88.204167 (i.e. lat,lon).
+
+```{r}
+print(slice_head(Coordinates, n=30),width=Inf)
+
+print(slice_tail(Coordinates, n=30),width=Inf)
+```
+
+This means that it's best to place the numbers beginning with "40" in the first position before the comma, then the numbers beginning with "-88" in the second position.
+
+```{r}
+Coordinates00 <- str_remove_all(Coordinates$V3, "\\)|\\,|\\(")
+Coordinates000 <- str_split(Coordinates00, " ", simplify = TRUE)
+RentalsData <- RentalsData %>%
+  mutate(Coordinates01 = as.numeric(Coordinates000[,1]),
+Coordinates02 = as.numeric(Coordinates000[,2]))
+
+print(slice_tail(RentalsData, n=10),width=Inf)
+```
+
+We just split the coordinates as they originally appeared, but we still have not corrected the coordinates. To do this, we can use the famous `ifelse()` function (see Vectorization notes).
+
+```{r}
+c01 <- ifelse(RentalsData$Coordinates01<0,RentalsData$Coordinates02,RentalsData$Coordinates01)
+c02 <- ifelse(RentalsData$Coordinates02>0,RentalsData$Coordinates01,RentalsData$Coordinates02)
+
+RentalsData2 <- RentalsData %>%
+  mutate(Latitude = c01, Longitude = c02, City = Coordinates$City, State = Coordinates$State) %>%
+  select(-c(`Mappable Address`,Coordinates01,Coordinates02))
+
+print(slice_tail(RentalsData2, n=10),width=Inf)
+```
+
+Trouble is no more!
+
+
+***
+
+
+## <a name="summarizing"></a>Summarizing data
+
+Another important aspect of data wrangling is to summarize or aggregate data. This may also be considered as applying summary functions, such as the sum `sum()`, mean `mean()`, median `median()`, variance `var()`, or standard deviation `sd()`, to grouped data aka "group processing". Grouped data can be any data with a categorical variable or factor as a column. This task comes in handy when we want to know statistical values for each group. To accomplish summarization, sometimes we can leverage the way the data are arranged (or sorted). Other times, the arrangement has no bearing on our ability to aggregate. Ideally, we want the result to be a data frame, tibble, or other recursive object when possible.
+
+### <a name="grouped-processing-baser"></a>Grouped processing in base R
+
+Working with the City of Urbana's [Rental Inspection Grades Listing Data as tab-separated .txt](https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt), we may have to use loops and conditional execution to achieve the grouped summaries as a base R approach. I didn't mention it explicitly, but we've done this kind of work in the Loops and Conditional Execution notes. For review, let's compute the proportion for each inspection letter grade.
+
+```{r}
+library(tidyverse)
+RentalsData <- read_delim("https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt", delim="\t")
+
+g <- sort(unique(RentalsData$Grade))
+groups <- rep(0,length(g))
+for (i in 1:length(groups)){
+ groups[i] <- nrow(RentalsData[RentalsData$Grade==g[i],"Grade"])
+}
+data.frame(grades = g, count_grade=groups, grade_proportion = groups/sum(groups), row.names = NULL)
+```
+
+
+### <a name="grouped-processing-tidyverse"></a>Grouped processing in tidyverse
+
+In order to summarize group data with the tidyverse, we need two actions to work in tandem: `group_by()` and `summarise()`. 
+
+**summarize() is the same thing as summarise().**
+
+The `group_by()` function allows us to do data processing separately for each group in the data frame. By itself, the function does not affect the data outwardly. The group processing takes place once we combine this function with other **dplyr** functions, especially `summarise()`. The `group_by()` can work with `mutate()` and `arrange()` as well when specified.
+
+We can create grouped summaries of data with the `summarise` function. By itself it collapses a data frame into a vector by aggregating. **This implies that we first group the data, then summarise.** Also notice the difference between `mutate()` and `summarise()` after the `group_by()`. Alternatively, we can use the `tally()` function to achieve the same result of counting the Grades.
+
+```{r}
+gg <- group_by(RentalsData, Grade)
+gg
+summarise(gg, count_grade = n())
+
+gg %>% tally()
+
+RentalsData %>%
+  group_by(Grade) %>%
+  summarise(count_grade = n(), proportion_grade=count_grade/nrow(RentalsData))
+
+RentalsData %>%
+  group_by(Grade) %>%
+  mutate(count_grade = n(), proportion_grade=count_grade/nrow(RentalsData))
+```
+
+Other useful tidyverse functions are `count()` and its mutate version `add_count()`. Both functions count observations by group (without using the `group_by()` function). The mutate version `add_count()` adds the newly counted values as a new column in the existing data. Let's repeat the idea in the code chunk above: show the grouped summaries for the Grade column.
+
+```{r}
+RentalsData %>%
+  count(Grade) #no need for `group_by()` function
+
+RentalsData %>%
+  group_by(Grade) %>%
+  tally() #still need `group_by()` function
+```
+
+***
+
+
+## <a name="combining"></a>Combining data
+
+What happens when you need to work with multiple datasets at once? What happens when the one dataset you have is not enough information? Where do you get the additional information? Combining data sets is a very useful data wrangling operation. Grabbing information from another dataset and adding it to your current one potentially increases your information. Combining data could mean different things in various disciplines or the same thing with different terms such as concatenating, merging, binding, appending, or joining.
+
+### <a name="concatenating"></a>Concatenating
+
+In R, concatenating is the act of combining objects or strings together and is typically done with `c()` or `paste()` or `glue()` in **glue**. In order to use the `glue()` function, we may have to install the glue package separately and call it separately as in `glue::glue()` or `library(glue)`.
+
+### <a name="binding"></a>Binding
+
+In R, binding (or appending) is the act of combining two or more objects by stacking one on top of the other such as `rbind()` in R (or `bind_rows()` in **dplyr**) or stacking one next to the other such as `cbind()` in base R (or `bind_cols()` in **dplyr**).
+
+### <a name="merging"></a>Merging
+
+Merging (or joining) usually implies combining two or more objects with different columns of information into one single object. This merging would require each of the different data objects to have one column in common with a unique identifying information such as an ID variable or geographic location. There are at least 3 situations that can occur when merging objects. 
+
+1. Observations in the two (or more) separate objects could not match each other.
+
+**Data 1**  
+
+ID | Salary
+:---|:---
+A | $10K
+B | $11K
+D | $12K
+
+**Data 2**  
+
+ID | Number
+:---|:---
+C | 2175551234
+E | 2175551235
+F | 2175551236
+
+**Merged Data**  
+
+ID | Salary | Number
+:---|:---|:---
+A | $10K |
+B | $11K |
+D | $12K |
+C |  | 2175551234
+E |  | 2175551235
+F |  | 2175551236
+
+2. Observations in the two (or more) separate objects could match each other one-to-one.
+
+**Data 1**  
+
+ID | Salary
+:---|:---
+A | $10K
+B | $11K
+D | $12K
+
+**Data 2**  
+
+ID | Number
+:---|:---
+A | 2175551214
+B | 2175551224
+D | 2175551244
+
+**Merged Data**  
+
+ID |Salary | Number
+:---|:---|:---
+A |$10K | 2175551214
+B |$11K | 2175551224
+D |$12K | 2175551244
+
+3. Observations in the two (or more) separate objects could match each other one-to-many (or many-to-one).
+
+**Data 1**  
+
+ID |Salary
+:---|:---
+A |$10K
+D |$12K
+
+**Data 2** 
+
+ID |Number
+:---|:---
+A |2175551214
+A |2175551204
+D |2175551244
+
+**Merged Data**  
+
+|ID |Salary |Number |
+|:---|:---|:---|
+|A |$10K |2175551214 |
+|A |$10K |2175551204 |
+|D |$12K |2175551244 |
+
+How we merge (or join) the data depends on which of the three situations is intended for the data management. Only keeping the matches (#2 above) could be accomplished using an inner join (`inner_join()` in **dplyr** or `merge(...,all=FALSE)` in base R) . Keeping the matches (#2 and #3 above) and non-matches (#1 above) could be accomplished using a full join (`full_join()` in **dplyr** or `merge(...,all=TRUE)` in base R). Whenever the common column of the different data objects contain the same information but have different column names, the easiest fix is to rename the column in one of the two objects (`rename()` in **dplyr**). We may also be interested in preserving one dataset while combining new information from another dataset into that one. In that case, a `left_join()` or `right_join()` could be useful.
+
+### <a name="examples2"></a>Combining data examples with City of Urbana's Rental Inspection Grades Listing Data
+
+Let's combine the owner addresses (scraped and saved from Accessing Data via Web Scraping notes) with the `RentalsData` as [new-owners-addresses](https://uofi.box.com/shared/static/fh4phsjxzod704n0sigxn2iupgn5f026.csv). Doing this combining is quite simple because we have only one column and the same number of elements in the RentalsData and owners-addresses.
+
+```{r}
+owners_addresses <- read_csv("https://uofi.box.com/shared/static/fh4phsjxzod704n0sigxn2iupgn5f026.csv")
+dim(RentalsData)
+dim(owners_addresses)
+
+RentalsData2 <- bind_cols(RentalsData,owners_addresses)
+
+RentalsData2 %>%
+  rename(Owner=name) %>%
+  select(`Parcel Number`,Owner) %>%
+  slice_head(n=10)
+```
+
+**SN: The `distinct()` function is a dplyr function that works much like base R's `unique()` function. It may come in handy when wanting to find the number of unique individuals of a particular subset of a dataset.**
+
+```{r}
+unique(RentalsData$Grade)
+
+distinct(RentalsData,Grade)
+
+distinct(RentalsData, Grade, .keep_all = TRUE)
+```
+
+**There are a host of other functions and operations to be discovered in tidyverse's dplyr.**
+
+#### END OF NOTES

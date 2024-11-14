@@ -1,0 +1,960 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+## Notes
+### Created by Christopher Kinson
+
+
+***
+
+
+## Table of Contents
+
+- [Intro to SQL](#intro)
+- [Accessing and importing data](#accessing-and-importing-data)  
+- [Handling dates and times](#handling-dates-and-times) 
+- [Arranging data](#arranging-data)  
+  - [Organizing columns](#organizing)  
+  - [Sorting columns](#sorting)  
+- [Data Reduction](#data-reduction)  
+  - [Filtering rows](#filtering)  
+  - [Selecting columns](#selecting)  
+  - [Dropping missing values](#dropping)
+- [Data Expansion](#data-expansion)  
+  - [Renaming columns](#renaming)  
+  - [Mutating columns](#mutating)
+- [Conditional execution](#conditional-execution)  
+- [More SQL](#more)
+- [Summarizing data](#summarizing)
+- [Combining data](#combining)  
+- [Validating data](#validating)
+  - [Strategy 1 - Filtering and arranging](#stra1)
+  - [Strategy 2 - Counting frequencies and duplicates](#stra2)
+  - [Strategy 3 - Computing summary statistics](#stra3)
+- [Cleaning data](#cleaning)
+  - [Approach 1 - Removing duplicate observations](#appr1)
+  - [Approach 2 - Fixing rounding errors and inconsistent units of measurement](#appr2)
+  - [Approach 3 - Removing or replacing missing values](#appr3)
+  - [Approach 4 - Limiting a distribution to its realistic set of observations](#appr4)
+  - [Approach 5 - Correcting and subsetting with dates](#appr5)
+  - [Approach 6 - Correcting misspelled words, abbreviations, or text cases](#appr6)
+- [SQL Subqueries](#subqueries)
+  - [Example 1](#example01)
+  - [Example 2](#example02)
+  - [Example 3](#example03)
+  - [Example 4](#example04) 
+
+***
+
+
+## <a name="intro"></a>Intro to SQL
+
+SQL stands for structured query language and represents a sort of grammar of data management and wrangling. Some important grammar or translations are: database (collection of data files), table (e.g. a subset; a data frame), fields (columns), records (rows), query (any data wrangling task).
+
+The intention behind the language is to have a general method for handling data. SQL can be accessed in almost any platform and programming language including the two in this course (R and Python). There are some subtleties in SQL that make it distinct and different from how programming languages access and handle data. Although it is structured and general, SQL has many versions developed by different users and companies for their own specific purposes. In this course, we plan on using the most common SQL statements, clauses, and keywords to avoid tasks that are inoperable on the 2 programming languages. Below is a general form of a typical query.
+
+```
+SELECT object-item <, ...object-item> 
+FROM from-list 
+<WHERE sql-expression> 
+<GROUP BY object-item <, ...object-item >> 
+<HAVING sql-expression> 
+<ORDER BY order-by-item <DESC> <, ...order-by-item>>
+```
+
+The `SELECT` statement specifies which columns need to be in the resulting table once the query is complete. New variables may be created in the `SELECT` statement. 
+
+The `FROM` clause points the dataset (the source of the query). Usually, this dataset exists within the database.
+
+The `WHERE` clause is a way to select records based on conditions.
+
+The `GROUP BY` clause groups data for processing. It helps to remove duplicates when there is a unique identifier in the data. 
+
+The `HAVING` clause allows conditions to be placed on the groups for group processing. This clause is relevant when a `GROUP BY` clause exists.
+
+The `ORDER BY` clause is the way to arrange the data. The default behavior is sorting in ascending order.
+
+The order of these statements, clauses, and keywords matters and must be strictly followed. Meaning, a `WHERE` clause cannot appear before a `FROM` clause. Almost every query requires a `SELECT` statement.
+
+To begin using SQL in R, we need to install and call the **sqldf** package. Afterwards, it's a good idea to become familiar with the package (or library) using the help function `?sqldf` in R. 
+
+
+***
+
+
+## <a name="accessing-and-importing-data"></a>Accessing and importing data
+
+We won't use SQL to import data from a database. Instead, we will continue using the same tools to import data discussed in Week 02 Notes: `read_delim()`, `read_csv()`, and `fromJSON()`. After importing data, we can work with those assigned objects.
+
+Let's import the [Rental Inspection Grades Listing Data as comma-separated .csv](https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv).
+
+```{r importing}
+library(tidyverse)
+
+rentals <- read_csv("https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv", 
+          col_types = cols(`Inspection Date` = col_date(format = "%m/%d/%Y"), 
+                           `Expiration Date` = col_date(format = "%m/%d/%Y")))
+
+str(rentals)
+```
+
+
+***
+
+
+## <a name="#handling-dates-and-times"></a>Handling dates and times
+
+In general, dates and times may be considered as numeric information. Thus we should recall the formatting dates and times in the Week 03 Notes. However, in SQL particularly, dates are handled more easily as character strings after they've been coerced from numeric back to character format. Thus, a good idea is to coerce dates to numeric (date) format then coerce back to character format using your programming language of choice (not using SQL). Afterwards, we can use those character strings and their format to perform an necessary subsetting much like the example below.
+
+```{r dates}
+library(sqldf)
+
+rentals$`Expiration Date` <- as.character(rentals$`Expiration Date`)
+rentals$`Inspection Date` <- as.character(rentals$`Inspection Date`)
+
+sqldf("
+SELECT * 
+FROM rentals
+WHERE `Inspection Date` = '2020-03-10'
+")
+```
+
+**Pay attention to how column names with spaces must be enclosed with the \` ticks. And how we begin and end the body of the sqldf() function with \" quotes.**
+
+
+***
+
+
+## <a name="arranging-data"></a>Arranging data
+
+Arranging a dataset involves organizing its columns and sorting the data by one or more of its columns. 
+
+### <a name="organizing"></a>Organizing columns
+
+By organizing the data we may want certain columns to appear as the first column, second column, etc. See edited image taken from [RStudio's dplyr cheat sheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+![](https://uofi.box.com/shared/static/sxh3cw9yyol3m3tlu8fhefw9ye1pjmwm.png)
+
+Using SQL, let's arrange the Rental Inspection Grades Listing Data such that:
+
+- the first column is Parcel Number  
+- the second column is Property Address  
+- the third column is Mappable Address  
+- the fourth column is Inspection Date  
+- the fifth column is Expiration Date  
+- the sixth column is License Status
+- the seventh column is Grade  
+
+```{r arranging01}
+sqldf("
+SELECT `Parcel Number`, `Property Address`, `Mappable Address`, `Inspection Date`, `Expiration Date`, `License Status`, Grade
+FROM rentals
+LIMIT 10
+")
+```
+
+Remember that these are not permanent objects until we assign them.
+
+```{r arranging02}
+rentals2 <- sqldf("
+SELECT `Parcel Number`, `Property Address`, `Mappable Address`, `Inspection Date`, `Expiration Date`, `License Status`, Grade
+FROM rentals
+")
+
+sqldf("
+    SELECT `Parcel Number`, `Property Address`, `Mappable Address`, `Inspection Date`, `Expiration Date`, `License Status`, Grade
+    FROM rentals2
+    LIMIT 10
+    ")
+```
+
+
+### <a name="sorting"></a>Sorting columns
+
+Sorting data in SQL is done with `ORDER BY`. The default ordering is ascending. Now let's sort the `rentals2` data such that the Parcel Numbers are in ascending order.
+
+```{r arranging03}
+sqldf("
+SELECT *
+FROM rentals2
+ORDER BY `Parcel Number`
+LIMIT 10
+")
+```
+
+If we want descending order, then we use the `DESC` keyword after the field name. We can also limit the amount of observations we want to show using the `LIMIT n` clause where $n$ is a number of records to be shown in the result. Let's sort the `rentals2` data such that the Grades are in descending order then Parcel Numbers are in ascending order and showing the resulting first 10 rows. 
+
+```{r arranging04}
+sqldf("
+SELECT `Parcel Number`, Grade
+FROM rentals2
+ORDER BY Grade DESC, `Parcel Number`
+LIMIT 10
+")
+```
+
+## <a name="data-reduction"></a>Data Reduction
+
+Data reduction tasks, from a data wrangling perspective, are done by data workers so often that they become second nature. In SQL, these are easily done with the clauses `WHERE` and `SELECT`.
+
+### <a name="filtering"></a>Filtering rows
+
+We can select rows or observations through conditions with the `WHERE` clause in SQL. Let's filter only the rows that have a grade of F.
+
+```{r datareduction01}
+sqldf("
+      SELECT *
+      FROM rentals2
+      WHERE Grade='Class F'
+      ")
+```
+
+We can filter only the rows that have a grade of A or F (where the keyword `OR` means "or").
+
+```{r datareduction02}
+sqldf("
+      SELECT *
+      FROM rentals2
+      WHERE Grade='Class F' OR Grade='Class A'
+      LIMIT 10
+      ")
+```
+
+We filter the rows corresponding to the a grade of A and expiration dates before the year 2021.
+
+```{r datareduction03}
+sqldf("
+      SELECT *
+      FROM rentals2
+      WHERE Grade='Class A' AND `Expiration Date` < '2021-01-01'
+      LIMIT 10
+      ")
+```
+
+### <a name="selecting"></a>Selecting columns
+
+We can select certain columns using the `SELECT` clause. Selecting can be helpful when we don't need all of a dataset's original columns. Let's select only the Mappable Address column.
+
+```{r datareduction04}
+sqldf("
+      SELECT `Mappable Address`
+      FROM rentals2
+      LIMIT 10
+      ")
+```
+
+De-selecting is not really allowed in SQL, but we can select all columns using `SELECT *`.
+ 
+```{r datareduction05}
+sqldf("
+      SELECT *
+      FROM rentals2
+      LIMIT 10
+      ")
+```
+
+### <a name="dropping"></a>Dropping missing values
+
+Missing values are often represented as `NA` (not available), `NaN` (not a number), ".", or " " in data. Missing values are slightly different from null values and unknown values. A missing value could be unknown or NULL or an actual value that just never made it into the data frame. 
+
+Null values (`NULL`) are undefined values often used in R coding to create empty objects. 
+
+Unknown values are usually noted or marked as "unknown" in a dataset. Older data might note a value as "9999" or "99999" to represent an unknown value. Unknown values are not necessarily missing when they are represented as "unknown" or "9999" within a dataset.
+
+In SQL, we can identify missing values using `IS NULL` in the `WHERE` statement such as  `WHERE Name IS NULL`. Let's remove missing values from the Expiration Date column with the `NOT` keyword.
+
+```{r datareduction06}
+sqldf("
+      SELECT `Expiration Date`
+      FROM rentals2
+      WHERE `Expiration Date` IS NOT NULL
+      LIMIT 10
+      ")
+```
+
+
+***
+
+
+## <a name="data-expansion"></a>Data expansion
+
+The methods in this section will be making the dataset larger in some way, usually by adding new columns of information.
+
+### <a name="renaming"></a>Renaming columns
+
+Renaming variables can be accomplished using `AS` keyword with the `SELECT` clause and serves as a convenient way to change a column's name without an assignment operator. We place the old name on the left side of `AS` and the new name on the right side.
+
+```{r dataexpansion01}
+sqldf("
+      SELECT `Mappable Address` AS full_address
+      FROM rentals2
+      LIMIT 10
+      ")
+```
+
+### <a name="mutating"></a>Mutating columns
+
+The real power of data wrangling and to a larger extent, data science, is the ability to create columns of new information. Often, this new information is really just a function of existing information. But, usually that new information is what is needed for a later analysis. Recall that the work of data management and wrangling (read: STAT 440) is to do all the data work prior to an actual data analysis. 
+
+Below is a table of SQL operators for arithmetic and logicals (booleans).
+
+Operation or Function | SQL Syntax 
+---|---
+Addition | + 
+Subtraction | \- 
+Multiplication | \* 
+Division | \/ 
+Exponentiation | POWER() 
+Modulus | %
+Equal to (for comparison) | =
+Not Equal to | <>
+Greater than | > 
+Less than | < 
+Greater than or equal to | >= 
+Less than or equal to | <= 
+And | AND
+Or | OR
+Negation (aka Not) | NOT
+Square root | SQRT() 
+Absolute value | ABS() 
+Logarithm (natural) | LOG()
+Exponential | EXP() 
+Mean | AVG()
+Minimum | MIN()
+Maximum | MAX()
+
+Read the following for more information on SQL's operators and functions [SQL operators](https://www.w3schools.com/sql/sql_operators.asp) and [SQL functions](https://www.w3schools.com/sql/sql_ref_sqlserver.asp).
+
+Within the `SELECT` clause, we can create the new columns based on existing ones. Suppose we want to represent the Grades of the inspections as numbers and create a proportion from that new numeric grade. The math operator that's going to be useful is division `/`. The SQL special statement that we have not discussed yet is the `CASE`...`WHEN`...`THEN`...`ELSE` which will allow us to have results similar to the `ifelse()` function in R. To accomplish this we might do:
+
+```{r dataexpansion02}
+rentals3 <- sqldf("
+      SELECT *,
+        CASE 
+          WHEN Grade='Class N' THEN 1
+          WHEN Grade='Class F' THEN 2
+          WHEN Grade='Class D' THEN 3
+          WHEN Grade='Class C' THEN 4
+          WHEN Grade='Class B' THEN 5
+          ELSE 6
+          END AS grade_numeric
+      FROM rentals2
+      ")
+
+sqldf("
+      SELECT grade_numeric/6.0 AS grade_prop
+      FROM rentals3
+      LIMIT 10
+      ")
+```
+
+That's quite powerful! 
+
+
+***
+
+
+### <a name="conditional-execution"></a>Conditional Execution
+
+SQL does allow for conditional execution in a form similar to `ifelse()` in R with `CASE`...`WHEN`...`THEN`...`ELSE`. This statement is part of the possibilities with the `SELECT` clause.
+
+```
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+END;
+```
+
+See the example of using this with the rentals data above. It's the same below.
+
+```{r conditionalexecution}
+rentals4 <- sqldf("
+      SELECT *,
+        CASE 
+          WHEN Grade='Class N' THEN 1
+          WHEN Grade='Class F' THEN 2
+          WHEN Grade='Class D' THEN 3
+          WHEN Grade='Class C' THEN 4
+          WHEN Grade='Class B' THEN 5
+          ELSE 6
+          END AS grade_numeric
+      FROM rentals2
+      ")
+
+sqldf("
+      SELECT grade_numeric/6.0 AS grade_prop
+      FROM rentals4
+      LIMIT 10
+      ")
+```
+
+
+***
+
+
+## <a name="more"></a>More SQL
+
+We continue exploring the many actions we can take in SQL and its query system.
+
+## <a name="summarizing"></a>Summarizing data
+
+Another important aspect of data wrangling is to summarize or aggregate data. This may also be considered as applying summary functions to grouped data aka "group processing". Grouped data can be any data with a categorical variable or factor as a column. This task comes in handy when we want to know statistical or numeric values for each member of a group. To accomplish summarization, sometimes we can leverage the way the data are arranged (or sorted). Other times, the arrangement has no bearing on our ability to aggregate.
+
+Working with the City of Urbana's [Rental Inspection Grades Listing Data as tab-separated .txt](https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt), we use SQL's `GROUP BY` and `HAVING` clauses for group processing. Let's compute the proportion for each inspection grade.
+
+```{r summarizing}
+library(tidyverse)
+RentalsData <- read_delim("https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt", delim="\t")
+
+library(sqldf)
+sqldf("SELECT Grade, COUNT(Grade) AS count_grade, COUNT(Grade)/1738.0 AS grade_proportion
+       FROM RentalsData
+       GROUP BY Grade
+      ")
+```
+
+
+***
+
+
+## <a name="combining"></a>Combining data
+
+Merging (or joining) usually implies combining two or more objects with different columns of information into one single object. This merging would require each of the different data objects to have one column in common with a unique identifying information such as an ID variable or geographic location. There are at least 3 situations that can occur when merging objects. 
+
+In SQL, binding (or appending) is the act of combining two or more objects by stacking one on top of the other excluding duplicates via `UNION` (or `UNION ALL` which includes duplicates) or stacking one next to the other with SQL joins such as `FULL JOIN` or `INNER JOIN`.
+
+1. Observations in the two (or more) separate objects could not match each other.
+
+**Data 1**  
+
+ID | Salary
+---|---
+A | $10K
+B | $11K
+D | $12K
+
+**Data 2**  
+
+ID | Number
+---|---
+C | 2175551234
+E | 2175551235
+F | 2175551236
+
+**Merged Data**  
+
+ID | Salary | Number
+---|---|---
+A | $10K |
+B | $11K |
+D | $12K |
+C |  | 2175551234
+E |  | 2175551235
+F |  | 2175551236
+
+2. Observations in the two (or more) separate objects could match each other one-to-one.
+
+**Data 1**  
+
+ID | Salary
+---|---
+A | $10K
+B | $11K
+D | $12K
+
+**Data 2**  
+
+ID | Number
+---|---
+A | 2175551214
+B | 2175551224
+D | 2175551244
+
+**Merged Data**  
+
+ID | Salary | Number
+---|---|---
+A | $10K | 2175551214
+B | $11K | 2175551224
+D | $12K | 2175551244
+
+3. Observations in the two (or more) separate objects could match each other one-to-many (or many-to-one).
+
+**Data 1**  
+
+ID | Salary
+---|---
+A | $10K
+D | $12K
+
+**Data 2** 
+
+ID | Number
+---|---
+A | 2175551214
+A | 2175551204
+D | 2175551244
+
+**Merged Data**  
+
+ID | Salary | Number
+---|---|---
+A | $10K | 2175551214
+A | $10K | 2175551204
+D | $12K | 2175551244
+
+How we merge (or join) the data depends on which of the three situations is intended for the data management. Only keeping the matches (#2 and #3 above) could be accomplished using an inner join (`INNER JOIN`) in SQL. Keeping the matches (#2 and #3 above) and non-matches (#1 above) could be accomplished using a full join (`FULL JOIN`) in SQL. ONe differentiator in SQL is that the column names do not need to be the same in order to join two or more datasets.
+
+Let's combine owner addresses with the `RentalsData` as [owners-addresses .csv](https://uofi.box.com/shared/static/7m2hlut865herv9zzgzvyl4ort0j7rhr.csv) with an inner join. Doing this combining is quite simple but first we need to mutate the owners addresses data with the Parcel Number column. **Notice that the mutate here was in tidyverse. This is because the owners addresses data did not have the Parcel Number column to begin with. The mutating we've done in SQL has been a function of existing columns in a dataset.**
+
+```{r combining01}
+owners_addresses <- read_csv("https://uofi.box.com/shared/static/7m2hlut865herv9zzgzvyl4ort0j7rhr.csv")
+
+owners_addresses$`Parcel Number` <- RentalsData$`Parcel Number`
+
+sqldf("SELECT *
+FROM RentalsData, owners_addresses
+WHERE RentalsData.`Parcel Number` = owners_addresses.`Parcel Number`
+LIMIT 10
+")
+```
+
+A more explicit inner join in SQL with the `INNER JOIN`, `ON`, and `AS` keywords can be seen below.
+
+```{r combining02}
+sqldf("SELECT `Property Address`, rd.`Parcel Number`, `Inspection Date`, Grade, `License Status`, `Expiration Date`, `Mappable Address`, oa.name AS Owner
+       FROM RentalsData AS rd INNER JOIN owners_addresses AS oa ON rd.`Parcel Number`=oa.`Parcel Number`
+       LIMIT 10
+      ")
+```
+
+The results are the same for both chunks, but in this chunk above I make more effort to remove duplicated columns and rename the column in the `owner_addresses` data.
+
+**SN: The `DISTINCT` keyword is a SQL function that works much like base R's `unique()` function. It may also come in handy when wanting to find the number of unique individuals of a particular subset.**
+
+
+***
+
+
+## <a name="validating"></a>Validating data
+
+Validation means the checking of something for its accuracy. Validating data means checking a dataset for invalid or inaccurate entries. This kind of checking is important because as data workers we do not want analyses to start with bad or incorrect data. The first step consists of defining errors. Data errors or data glitches are those data entries that should not be there and may be caused by human error or machine error. Maybe not always, but often these errors are fixable with enough context and background information about the data.
+
+We will utilize data validation strategies that could help us identify data errors in SQL syntax working with a new version of City of Urbana's [Rental Inspection Grades Listing Data as comma-separated .csv](https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv).
+
+### <a name="stra1"></a>Strategy 1 - Filtering and arranging
+
+We can validate that there is a small number of properties earning an inspection grade of A since year 2019. **I am using the tidyverse to add the latitude and longitude columns here, because I am lazy.**
+
+```{r validating01}
+rentals <- read_csv("https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv", col_types = cols(`Inspection Date` = col_date(format = "%m/%d/%Y"), `Expiration Date` = col_date(format = "%m/%d/%Y")))
+rentals$`Inspection Date` <- as.character(rentals$`Inspection Date`)
+rentals$`Expiration Date` <- as.character(rentals$`Expiration Date`)
+Coordinates<-str_split(rentals$`Mappable Address`, "\\\n", simplify = TRUE)
+Coordinates[,1] <- str_replace(Coordinates[,1],"1\\s2","1/2")
+Coordinates <- as_tibble(Coordinates) %>%
+  select(-V2)
+Coordinates00 <- str_remove_all(Coordinates$V3, "\\)|\\,|\\(")
+Coordinates000 <- str_split(Coordinates00, " ", simplify = TRUE)
+rentals <- rentals %>%
+  mutate(Coordinates01 = as.numeric(Coordinates000[,1]),
+Coordinates02 = as.numeric(Coordinates000[,2]))
+c01 <- ifelse(rentals$Coordinates01<0,rentals$Coordinates02,rentals$Coordinates01)
+c02 <- ifelse(rentals$Coordinates02>0,rentals$Coordinates01,rentals$Coordinates02)
+rentals2 <- rentals %>%
+  mutate(Latitude = c01, Longitude = c02) %>%
+  select(-c(`Mappable Address`,Coordinates01,Coordinates02))
+
+sqldf("SELECT *
+      FROM rentals
+      WHERE Grade=='Class A' AND `Inspection Date`>'2018-12-31'
+      ORDER BY `Inspection Date`
+      LIMIT 10
+      ")
+```
+
+### <a name="stra2"></a>Strategy 2 - Counting frequencies and duplicates
+
+With the `rentals` data, the Parcel Number column is the ID variable so we can figure out duplicates easily.
+
+```{r validating02}
+sqldf("SELECT COUNT(`Parcel Number`) AS cpn
+       FROM rentals
+       GROUP BY `Parcel Number`
+       HAVING cpn>1
+      ")
+```
+
+### <a name="stra3"></a>Strategy 3 - Computing summary statistics
+
+Let's get the minimum, median, maximum, mean, standard deviation, and frequency of NAs for the coordinates - latitude and longitude.
+
+```{r validating03}
+#Latitude only
+#minimum
+lat01 <- sqldf("SELECT MIN(Latitude) AS stat,
+        CASE 
+          WHEN MIN(Latitude) THEN 'minimum'
+        END AS Latitude_stat
+      FROM rentals2
+      ")
+
+#median
+m <- sqldf("SELECT Latitude
+            FROM rentals2
+            WHERE Latitude IS NOT NULL
+            ORDER BY Latitude
+            LIMIT 865
+      ")
+lat02 <- sqldf("SELECT Latitude AS stat,
+        CASE 
+          WHEN Latitude THEN 'median'
+        END AS Latitude_stat
+      FROM m
+      ORDER BY Latitude DESC
+      LIMIT 1
+      ")
+
+#maximum
+lat03 <- sqldf("SELECT MAX(Latitude) AS stat,
+        CASE 
+          WHEN MAX(Latitude) THEN 'maximum'
+        END AS Latitude_stat
+      FROM rentals2
+      ")
+
+#mean
+lat04 <- sqldf("SELECT AVG(Latitude) AS stat,
+        CASE 
+          WHEN AVG(Latitude) THEN 'mean'
+        END AS Latitude_stat
+      FROM rentals2
+      ")
+
+#standard deviation
+lat05 <- sqldf("SELECT STDEV(Latitude) AS stat,
+        CASE 
+          WHEN STDEV(Latitude) THEN 'standard_deviation'
+        END AS Latitude_stat
+      FROM rentals2
+      ")
+
+#frequency of NAs
+lat06 <- sqldf("SELECT COUNT(`Parcel Number`) AS frequencyOfNAs,
+        CASE 
+          WHEN COUNT(`Parcel Number`) THEN 'frequencyOfNAs'
+        END AS Latitude_stat
+      FROM rentals2
+      WHERE Latitude IS NULL
+      ")
+
+sqldf("SELECT *
+      FROM lat01
+      UNION
+      SELECT *
+      FROM lat02
+      UNION
+      SELECT *
+      FROM lat03
+      UNION
+      SELECT *
+      FROM lat04
+      UNION
+      SELECT *
+      FROM lat05
+      UNION
+      SELECT *
+      FROM lat06
+      ")
+```
+
+```{r validating04}
+#Longitude only
+#minimum
+lon01 <- sqldf("SELECT MIN(Longitude) AS stat,
+        CASE 
+          WHEN MIN(Longitude) THEN 'minimum'
+        END AS Longitude_stat
+      FROM rentals2
+      ")
+
+#median
+m <- sqldf("SELECT Longitude
+            FROM rentals2
+            WHERE Longitude IS NOT NULL
+            ORDER BY Longitude
+            LIMIT 865
+      ")
+lon02 <- sqldf("SELECT Longitude AS stat,
+        CASE 
+          WHEN Longitude THEN 'median'
+        END AS Longitude_stat
+      FROM m
+      ORDER BY Longitude DESC
+      LIMIT 1
+      ")
+
+#maximum
+lon03 <- sqldf("SELECT MAX(Longitude) AS stat,
+        CASE 
+          WHEN MAX(Longitude) THEN 'maximum'
+        END AS Longitude_stat
+      FROM rentals2
+      ")
+
+#mean
+lon04 <- sqldf("SELECT AVG(Longitude) AS stat,
+        CASE 
+          WHEN AVG(Longitude) THEN 'mean'
+        END AS Longitude_stat
+      FROM rentals2
+      ")
+
+#standard deviation
+lon05 <- sqldf("SELECT STDEV(Longitude) AS stat,
+        CASE 
+          WHEN STDEV(Longitude) THEN 'standard_deviation'
+        END AS Longitude_stat
+      FROM rentals2
+      ")
+
+#frequency of NAs
+lon06 <- sqldf("SELECT COUNT(`Parcel Number`) AS frequencyOfNAs,
+        CASE 
+          WHEN COUNT(`Parcel Number`) THEN 'frequencyOfNAs'
+        END AS Longitude_stat
+      FROM rentals2
+      WHERE Longitude IS NULL
+      ")
+
+sqldf("SELECT *
+      FROM lon01
+      UNION
+      SELECT *
+      FROM lon02
+      UNION
+      SELECT *
+      FROM lon03
+      UNION
+      SELECT *
+      FROM lon04
+      UNION
+      SELECT *
+      FROM lon05
+      UNION
+      SELECT *
+      FROM lon06
+      ")
+```
+
+
+***
+
+
+## <a name="cleaning"></a>Cleaning data
+
+You need to know context and background information about the data to truly fix data errors. Guessing is not appropriate, especially when money or lives are at stake. Data cleaning is a data-specific task that can be tedious and painful. Do expect to spend a long time (your allotted time multiplied by 2) on data validating and cleaning. Careful and methodical fixing of errors may yield wondrous results for your analytics team (but don't spend too much time!).
+
+
+### <a name="appr1"></a>Approach 1 - Removing duplicate observations
+
+Removing duplicate observations can be accomplished via **filtering** after successfully identifying the unique ID variable. For example, if we were to remove duplicate properties based on a newly created unique ID variable. We could combine the already unique ID variable Parcel Number with Inspection Date or we could just use Parcel Number like below.
+
+```{r cleaning01}
+sqldf("SELECT COUNT(`Parcel Number`) AS count_id
+      FROM rentals
+      GROUP BY `Parcel Number`
+      HAVING count_id >1")
+```
+
+### <a name="appr2"></a>Approach 2 - Fixing rounding errors and inconsistent units of measurement
+
+We could round the latitude and longitude values of `rentals` data to the hundredths place via rounding with the `ROUND()` keyword.
+
+```{r cleaning02}
+sqldf("SELECT ROUND(Latitude, 2) AS lat1, ROUND(Longitude, 2) AS lon1
+      FROM rentals2
+      LIMIT 10
+      ")
+```
+
+### <a name="appr3"></a>Approach 3 - Removing or replacing missing values
+
+SQL has the `IS NOT NULL` keyword which quickly removes NAs from a dataset when used in the `WHERE` clause.
+
+We could apply the `IS NOT NULL` for all columns. *Again, this is not something that is necessary for this particular dataset.**
+
+```{r cleaning03}
+sqldf("SELECT `Property Address`, `Parcel Number`, `Inspection Date`, Grade, `License Status`, `Expiration Date`, Latitude, Longitude
+      FROM rentals2
+      WHERE `Property Address` IS NOT NULL AND `Parcel Number` IS NOT NULL AND `Inspection Date` IS NOT NULL AND Grade IS NOT NULL AND `License Status` IS NOT NULL AND `Expiration Date` IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL
+      LIMIT 10
+      ")
+```
+
+### <a name="appr4"></a>Approach 4 - Limiting a distribution to its realistic set of observations
+
+For example, if we were to remove incorrect coordinate values. **This is not something we should do for this particular dataset.**
+
+```{r cleaning04}
+sqldf("SELECT *
+      FROM rentals2
+      WHERE 30 < Latitude < 50 OR -90 < Longitude < -70
+      LIMIT 10
+      ")
+```
+
+### <a name="appr5"></a>Approach 5 - Correcting and subsetting with dates
+
+This might also be considered subsetting and applying functions and operators for dates and times.
+
+```{r cleaning05}
+sqldf("SELECT *
+      FROM rentals
+      WHERE `Inspection Date` > '2019-12-31' AND `Inspection Date`< '2021-01-01'
+      LIMIT 10
+      ")
+```
+
+### <a name="appr6"></a>Approach 6 - Correcting misspelled words, abbreviations, or text cases
+
+We can place all property addresses, grade, and cities in all caps. Similarly, SQL allows for lowercase text conversion. 
+
+```{r cleaning06}
+sqldf("SELECT *, UPPER(`Property Address`), UPPER(`Grade`)
+      FROM rentals2
+      LIMIT 10
+      ")
+```
+
+SQL also allows the scanning of text for the purpose of extracting characters with the SUBSTRING function. The standard usage of this function flows: `SUBSTRING(string, start, length)`. Using the rentals data, we can extract the city from the Mappable Address.
+
+```{r}
+sqldf("SELECT SUBSTRING(Grade, -1, 1) AS `Letter Grade`
+        FROM rentals2
+      ")
+```
+
+
+
+## <a name="subqueries"></a>SQL Subqueries
+
+Let's import the [Rental Inspection Grades Listing Data as comma-separated .csv](https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv).
+
+```{r subqueries01}
+library(tidyverse)
+library(sqldf)
+
+rentals <- read_csv("https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv", col_types = cols(`Inspection Date` = col_date(format = "%m/%d/%Y"), `Expiration Date` = col_date(format = "%m/%d/%Y")))
+rentals$`Inspection Date` <- as.character(rentals$`Inspection Date`)
+rentals$`Expiration Date` <- as.character(rentals$`Expiration Date`)
+
+str(rentals)
+```
+
+An SQL subquery is simply a query within a query. The subquery can be written anywhere so long as the SQL syntax is followed. Here's a reminder of the proper SQL syntax for any query.
+
+
+```
+SELECT object-item <, ...object-item> 
+FROM from-list 
+<WHERE sql-expression> 
+<GROUP BY object-item <, ...object-item >> 
+<HAVING sql-expression> 
+<ORDER BY order-by-item <DESC> <, ...order-by-item>>
+```
+
+The `SELECT` statement specifies which columns need to be in the resulting table once the query is complete. New variables may be created in the `SELECT` statement. 
+
+The `FROM` clause points the dataset (the source of the query). Usually, this dataset exists within the database.
+
+The `WHERE` clause is a way to select records based on conditions.
+
+The `GROUP BY` clause groups data for processing. It helps to remove duplicates when there is a unique identifier in the data. 
+
+The `HAVING` clause allows conditions to be placed on the groups for group processing. This clause is relevant when a `GROUP BY` clause exists.
+
+The `ORDER BY` clause is the way to arrange the data. The default behavior is sorting in ascending order.
+
+The order of these statements, clauses, and keywords matters and must be strictly followed. Meaning, a `WHERE` clause cannot appear before a `FROM` clause. Almost every query requires a `SELECT` statement.
+
+## <a name="example01"></a>Example 1
+
+One usage that I like is to put a subquery in the place of a dataset name in the `FROM` clause. For example, without a subquery, I could write two queries to show the number of unique parcel numbers of the rentals data in which the inspection grades are only A and the inspection date is after year 2018. See this chunk below.
+
+```{r subqueries02}
+x<-sqldf("SELECT *
+      FROM rentals
+      WHERE Grade=='Class A' AND `Inspection Date`>'2018-12-31'
+      ORDER BY `Inspection Date`
+      ")
+
+sqldf("SELECT COUNT(`Parcel Number`) AS pn_count
+      FROM x
+      LIMIT 10
+      ")
+```
+
+With a subquery, this can be done as seen in this chunk below.
+
+```{r subqueries03}
+sqldf("SELECT COUNT(`Parcel Number`) AS pn_count
+      FROM (SELECT *
+      FROM rentals
+      WHERE Grade=='Class A' AND `Inspection Date`>'2018-12-31'
+      ORDER BY `Inspection Date`)
+      LIMIT 10
+      ")
+```
+
+## <a name="example02"></a>Example 2
+
+Another common usage is to place a subquery beginning in the `WHERE` clause. This usage might make sense for working with different datasets and filtering certain datasets to join them with another dataset. See the chunk below in which we are joining the column of a filtered owners addresses with rentals data. Particularly, we can filter the owners addresses data to keep the observations that contain the string 'THE'.
+
+Recall the [owners-addresses .csv](https://uofi.box.com/shared/static/7m2hlut865herv9zzgzvyl4ort0j7rhr.csv). We must first mutate to add the parcel numbers column to the existing column of the owners addresses data.
+
+```{r subqueries04}
+owners_addresses$`Parcel Number` <- rentals$`Parcel Number`
+
+sqldf("SELECT *
+      FROM rentals 
+      WHERE `Parcel Number` IN 
+      (SELECT `Parcel Number`
+      FROM owners_addresses
+      WHERE name LIKE 'THE%')
+      LIMIT 10
+      ")
+```
+
+## <a name="example03"></a>Example 3
+
+A subquery beginning in the `WHERE` clause might also be useful filtering a single dataset such as the code chunk below.
+
+```{r subqueries05}
+sqldf("SELECT *
+      FROM rentals
+      WHERE `Parcel Number` NOT IN
+    (SELECT `Parcel Number`
+     FROM rentals
+     WHERE Grade = 'Class A')
+     LIMIT 10
+     ")
+```
+
+## <a name="example04"></a>Example 4
+
+Here's an example of using a subquery beginning in the `SELECT` clause to mutate a new column. In the code chunk below, we are mutating the rentals data with a new column containing the string "Champaign" representing the county in which all properties belong.
+
+```{r subqueries06}
+sqldf("SELECT `Parcel Number`, `Property Address`,
+      (SELECT 'Champaign'
+      FROM rentals) AS County
+      FROM rentals
+      LIMIT 10
+      ")
+```
+
+#### END OF NOTES

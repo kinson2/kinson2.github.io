@@ -1,0 +1,228 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+## Week 09 Notes
+### Created by Christopher Kinson
+
+
+***
+
+
+## Table of Contents
+
+- [Validating data](#validating)
+  - [Strategy 1 - Filtering and arranging](#stra1)
+  - [Strategy 2 - Counting frequencies and duplicates](#stra2)
+  - [Strategy 3 - Computing summary statistics](#stra3)
+  - [Strategy 4 - Visualizing distributions](#stra4)
+- [Cleaning data](#cleaning)
+  - [Approach 1 - Removing duplicate observations](#appr1)
+  - [Approach 2 - Fixing rounding errors and inconsistent units of measurement](#appr2)
+  - [Approach 3 - Removing or replacing missing values](#appr3)
+  - [Approach 4 - Limiting a distribution to its realistic set of observations](#appr4)
+  - [Approach 5 - Correcting and subsetting with dates](#appr5)
+  - [Approach 6 - Correcting misspelled words, abbreviations, or text cases](#appr6)
+
+
+***
+
+
+## <a name="validating"></a>Validating data
+
+Validation means the checking of something for its accuracy. Validating data means checking a dataset for invalid or inaccurate entries. This kind of checking is important because as data workers we do not want analyses to start with bad or incorrect data. The first step consists of defining errors. Data errors or data glitches are those data entries that should not be there and may be caused by human error or machine error. Maybe not always, but often these errors are fixable with enough context and background information about the data.
+
+Some common data errors include:
+
+ - duplicate observations (rows)
+
+ - lack of correspondence across fields (columns)
+
+ - inconsistent measurements and/or units
+
+ - values that are beyond outliers
+
+ - variable formatting (e.g. date, numeric vs character)
+
+ - misspelled words and nonstandard abbreviations
+
+ - a patterned inaccuracy affecting a large number of records
+
+In this section of the notes, we will utilize data validation strategies that could help us identify data errors.
+
+### <a name="stra1"></a>Strategy 1 - Filtering and arranging
+
+We can view a print out of a subset based on specific conditions to identify values that either go against or with the conditions. Arranging may help organize the values to quickly assess start or end points. Do review arranging data notes and data reduction notes and pay special attention to how to implement regular expressions within the regex and string manipulation notes. **There are alternatives to using regular expressions to deal with character strings. Just as there are coding alternatives to achieve most results for this course. Students must do what they are comfortable with so long as it is in alignment with an assignment's instructions.**
+
+Working with the City of Urbana's [Rental Inspection Grades Listing Data as comma-separated .csv](https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv), we can validate that there is a small number of properties earning an inspection grade of A since year 2019. 
+
+```{r}
+library(tidyverse)
+
+rentals <- read_csv("https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv",col_types = cols(`Inspection Date` = col_date(format = "%m/%d/%Y"), `Expiration Date` = col_date(format = "%m/%d/%Y")))
+
+rentals %>% 
+  filter(Grade=="Class A", `Inspection Date`>"2018-12-31") %>%
+  arrange(desc(`Inspection Date`))
+```
+
+### <a name="stra2"></a>Strategy 2 - Counting frequencies and duplicates
+
+We can create a frequency table of a select number of variables. Since it's a frequency table, it has potential to be cross-classified by design. Ideally, the variables for which we want to know the frequency should be grouping or categorical variables. Frequency tables also aid in determining the number of distinct (or unique) values. It is common for a statistical dataset to contain an ID variable - one that uniquely identifies each observation (e.g. UIN, Social Security Number, 10 digit phone number). However, when that is not the case, figuring out which variable to trust as an ID variable can be difficult especially when attempting to discover duplicate observations. An idea may be to combine two or more variables (through concatenation) to create a new ID variable.
+
+With the `rentals` data, the parcel number column is the ID variable so we can figure out duplicates easily.
+
+```{r}
+rentals %>%
+  count(`Parcel Number`) %>%
+  filter(n>1)
+```
+
+If you prefer base R, the `table()` function is quite handy.
+
+### <a name="stra3"></a>Strategy 3 - Computing summary statistics
+
+We can view a numeric summary of variables based on summary statistics such as minimum, maximum, median, mean, and standard deviation. This summary might include information about the number of missing values or NAs, specific quantiles, and extreme observations (similar to a minimum and maximum). We can make a function that returns each of these values to always use in the future. 
+
+Let's get the minimum, first quartile, median, third quartile, maximum, mean, standard deviation, and frequency of NAs for the coordinates. But first, let's put the coordinates.
+
+```{r}
+Coordinates<-str_split(rentals$`Mappable Address`, "\\\n", simplify = TRUE)
+Coordinates[,1] <- str_replace(Coordinates[,1],"1\\s2","1/2")
+Coordinates <- as_tibble(Coordinates) %>%
+  mutate(City="Urbana", State="IL") %>%
+  select(-V2)
+Coordinates00 <- str_remove_all(Coordinates$V3, "\\)|\\,|\\(")
+Coordinates000 <- str_split(Coordinates00, " ", simplify = TRUE)
+rentals <- rentals %>%
+  mutate(Coordinates01 = as.numeric(Coordinates000[,1]),
+Coordinates02 = as.numeric(Coordinates000[,2]))
+c01 <- ifelse(rentals$Coordinates01<0,rentals$Coordinates02,rentals$Coordinates01)
+c02 <- ifelse(rentals$Coordinates02>0,rentals$Coordinates01,rentals$Coordinates02)
+rentals2 <- rentals %>%
+  mutate(Latitude = c01, Longitude = c02, City = Coordinates$City, State = Coordinates$State) %>%
+  select(-c(`Mappable Address`,Coordinates01,Coordinates02))
+```
+
+
+```{r}
+summarystat <- function(column){
+  rbind(min=min(column, na.rm = TRUE), firstQuartile=fivenum(column)[2], median=median(column, na.rm = TRUE), thirdQuartile=fivenum(column)[4], max=max(column, na.rm = TRUE), mean=mean(column, na.rm = TRUE), standardDeviation=sd(column, na.rm = TRUE), frequencyOfNAs=sum(is.na(column)) )
+}
+
+summarystat(rentals2$`Latitude`)
+summarystat(rentals2$`Longitude`)
+```
+
+### <a name="stra4"></a>Strategy 4 - Visualizing distributions
+
+Although not a focus of our course, producing data visualizations of the distributions of certain variables would allow for a quick inspection of "reasonableness" of the values. For a numeric variable, we can use histograms to show shape and possible skewness and box plots to show symmetry (above and below the median) and potential outliers (1.5\*IQR Rule aka "Box Plot Rule"). For a categorical variable, we can use bar plots for a nicer visual than a frequency table.
+
+We can view basic plots of the latitudes and longitudes before correcting them and after correcting them.
+
+```{r}
+plot(rentals$Coordinates02,rentals$Coordinates01, xlim=range(rentals$Coordinates02, na.rm=TRUE), ylim=range(rentals$Coordinates01, na.rm=TRUE), type = "p", pch=16, main = "Before")
+```
+
+```{r}
+plot(rentals2$Longitude,rentals2$Latitude, xlim=range(rentals2$Longitude, na.rm=TRUE), ylim=range(rentals2$Latitude, na.rm=TRUE), type = "p", pch=16, main = "After")
+```
+
+
+***
+
+
+## <a name="cleaning"></a>Cleaning data
+
+You need to know context and background information about the data to truly fix data errors. Guessing is not appropriate, especially when money or lives are at stake. Data cleaning is a data-specific task that can be tedious and painful. Do expect to spend a long time (your allotted time multiplied by 2) on data validating and cleaning. Careful and methodical fixing of errors may yield wondrous results for your analytics team (but don't spend too much time!).
+
+Some common data cleaning approaches include:  
+
+ - removing duplicate observations  
+ 
+ - fixing rounding errors and inconsistent units of measurement
+ 
+ - removing or replacing missing values
+ 
+ - limiting a distribution to its realistic set of observations
+ 
+ - correcting and subsetting with dates
+ 
+ - correcting misspelled words, abbreviations, or text cases
+
+### <a name="appr1"></a>Approach 1 - Removing duplicate observations
+
+Removing duplicates when the observation's duplication adds no new information is helpful in data cleaning. We exercise caution when removing observations by not removing anything from permanent data files. Use a renamed version or copy of the data in your programming language; always keep the original as the original. Creating a counter variable might be helpful to identify non-unique observations for removal (e.g. iterator `i`'s value increases with each new case).
+
+Removing duplicate observations can be accomplished via **filtering** after successfully identifying the unique ID variable. For example, if we were to remove duplicate properties based on a newly created unique ID variable. We could combine the already unique ID variable Parcel Number with Inspection Date or we could just use Parcel Number.
+
+```{r}
+rentals %>%
+  mutate(newid=paste(`Parcel Number`,`Inspection Date`,sep="-")) %>%
+  group_by(newid) %>%
+  mutate(count_id=n()) %>%
+  filter(count_id>1)
+
+rentals %>%
+  #mutate(newid=paste(`Parcel Number`,`Inspection Date`,sep="-")) %>%
+  group_by(`Parcel Number`) %>%
+  mutate(count_id=n()) %>%
+  filter(count_id>1)
+```
+
+### <a name="appr2"></a>Approach 2 - Fixing rounding errors and inconsistent units of measurement
+
+Numeric inconsistencies can plague data analysis. Fixing them can be as simple as converting the existing variable to another more accessible unit of measure (e.g. centimeters instead of inches). Re-formatting the variable may solve other numeric errors, especially when the numeric value we want is initially treated as a character string (e.g. coercion to numeric with base R `as.numeric()`). Rounding errors may be fixed quickly by employing a function in the programming language such as ceiling, flooring, and rounding. 
+
+We could round the latitude and longitude values of `rentals` data to the hundredths place via rounding.
+
+```{r}
+rentals2 %>%
+  mutate(Latitude=round(Latitude,2), Longitude=round(Longitude,2))
+```
+
+### <a name="appr3"></a>Approach 3 - Removing or replacing missing values
+
+A missing value may actually be informative for a particular data analysis. Thus, be cautious when removing missing values from a dataset. Consider why or how the missing values came to be and what information you may be discarding by removing missing values. If a value is missing completely at random, then removal is usually safe.
+
+The **dplyr** package has the `drop_na()` function which quickly removes NAs from a dataset. Use with caution, since this function removes any row of the dataset that has an NA in any column.
+
+We could apply the `drop_na()` function on the entire `rentals2` data. **Again, this is not something that is necessary for this particular dataset.**
+
+```{r}
+rentals2 %>%
+  drop_na()
+```
+
+### <a name="appr4"></a>Approach 4 - Limiting a distribution to its realistic set of observations
+
+This essentially means subsetting with conditions on numeric variables. Again, filtering works here.
+
+For example, if we were to remove incorrect coordinate values. **This is not something we should do for this particular dataset.**
+
+```{r}
+rentals %>%
+  filter(between(Coordinates01,30,50), between(Coordinates02,-90,-70))
+```
+
+### <a name="appr5"></a>Approach 5 - Correcting and subsetting with dates
+
+This might also be considered subsetting and applying functions and operators for dates and times.
+
+```{r}
+rentals2 %>%
+  filter(`Inspection Date` < "2021-01-01", `Inspection Date`>"2019-12-31")
+```
+
+### <a name="appr6"></a>Approach 6 - Correcting misspelled words, abbreviations, or text cases
+
+With unstructured text data, issues of misspelled words come up often. **When** it is important that words should be spelled correctly, a data engineer can spend time addressing it. However, it may be untenable to attempt to correctly spell each word in a text dataset. (Also, the text source's intent should be considered, such as African American Vernacular English, and other vernaculars that appear in writing). Another aspect of text data cleaning is deciding what to do with the case of the words in the text. Processing text might go smoother if we lower using tidyverse `str_to_lower()` or upper using tidyverse `str_upper()` the case on all text. For specific variables in a structured dataset, changing the case to a proper case using tidyverse `str_to_title()` might be beneficial (e.g. people's name, business name).
+
+We can place all property addresses, grade, and cities in all caps using base R functions too.
+
+```{r}
+rentals2 %>%
+  mutate(`Property Address`=toupper(`Property Address`), Grade=toupper(Grade), City=toupper(City))
+```
+
+#### END OF NOTES

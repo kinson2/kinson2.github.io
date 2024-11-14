@@ -1,0 +1,326 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Notes
+### Created by Christopher Kinson
+
+
+***
+
+### Table of Contents
+
+- [Arranging data](#arranging-data)  
+  - [Organizing columns](#organizing)  
+  - [Sorting columns](#sorting)  
+- [Reshaping data](#reshaping-data)  
+  - [Pivoting](#pivoting)  
+  - [Transposing](#transposing)  
+- [Data Reduction](#data-reduction)  
+  - [Filtering rows](#filtering)  
+  - [Slicing rows](#slicing)  
+  - [Selecting columns](#selecting)  
+  - [Dropping missing values](#dropping)
+- [Data Expansion](#data-expansion)  
+  - [Renaming columns](#renaming)  
+  - [Mutating columns](#mutating)  
+  
+
+***
+
+
+## <a name="arranging-data"></a>Arranging data
+
+Arranging a dataset involves organizing its columns and sorting the data by one or more of its columns. 
+
+### <a name="organizing"></a>Organizing columns
+
+By organizing the data we may want certain columns to appear as the first column, second column, etc. See edited image taken from [RStudio's dplyr cheat sheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+![](https://uofi.box.com/shared/static/efjo1s9nudife3464i4iz6azpck72ye0.png)
+
+Using the tidyverse, organizing the columns can be accomplished with the `select()` function which is within the **dplyr** package. Recall the City of Urbana's [Rental Inspection Grades Listing Data as tab-separated .txt](https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt). 
+
+```{r notesweek04_01}
+library(tidyverse)
+
+RentalsData <- read_delim("https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt", delim="\t")
+
+head(RentalsData)
+```
+
+Let's arrange the Rental Inspection Grades Listing Data such that:
+
+- the first column is Parcel Number  
+- the second column is Property Address  
+- the third column is Mappable Address  
+- the fourth column is Inspection Date  
+- the fifth column is Expiration Date  
+- the sixth column is License Status
+- the seventh column is Grade  
+
+```{r notesweek04_02}
+RentalsData %>% 
+  select(`Parcel Number`, `Property Address`, `Mappable Address`, `Inspection Date`, `Expiration Date`, `License Status`, Grade) %>%
+  head(., 5)
+
+RentalsData2 <- RentalsData %>% 
+  select(`Parcel Number`, `Property Address`, `Mappable Address`, `Inspection Date`, `Expiration Date`, `License Status`, Grade)
+
+head(RentalsData2, 5)
+```
+
+***SN: The pipe operator `%>%` comes with the tidyverse package and is a neat way to complete multiple lines of code and nesting of functions without doing all that. It takes the first code on the left side of the first pipe operator and places it into a pipeline of operations. Our code above can be translated in laypeople's terms as "beginning with `RentalsData` and then select these columns and then show the first 5 rows of the result.***
+
+Also, notice that in order to store the newly arranged data, we need to assign the data with the assignment operator.
+
+### <a name="sorting"></a>Sorting columns
+
+Sorting the data by the values in the columns involves the tidyverse's `arrange()` function (**dplyr** package). Now let's sort the data such that the Parcel Numbers are in ascending order showing the resulting first 10 rows.
+
+```{r notesweek04_03}
+RentalsData2 %>% 
+  arrange(`Parcel Number`) %>%
+  head(., 10)
+```
+
+We can complicate this arrangement by specifying the sort order of more columns. Let's sort the Rental Inspection Grades Listing Data such that the Grades in descending order then Parcel Numbers are in ascending order and showing the resulting first 10 rows. 
+
+```{r notesweek04_04}
+RentalsData2 %>% 
+  arrange(desc(Grade), `Parcel Number`) %>%
+  head(., 10)
+```
+
+
+***
+
+
+## <a name="reshaping-data"></a>Reshaping data
+Reshaping a dataset can be a good way to ensure the information we want is in the proper orientation. Two actions usually encompass reshaping: pivoting and transposing. The particular action being taken ultimately depends on the scenario. 
+
+### <a name="pivoting"></a>Pivoting
+
+Pivoting may happen in two ways: 
+
+1. "lengthening", which makes the dataset longer (more rows than we started). See image taken from [RStudio's dplyr cheat sheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). 
+
+![](https://uofi.box.com/shared/static/ctvr5otwce26u1ffe237tm86dfzm65d0.png)
+
+2. "widening", which makes the dataset wider (more columns than we started). See image taken from [RStudio's dplyr cheat sheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+![](https://uofi.box.com/shared/static/ha5495mhwj28cve25mnnyyofl69lnvoh.png)
+
+To prepare the data for pivoting, we are adding two columns to the City of Urbana's [Rental Inspection Grades Listing Data as tab-separated .txt](https://uofi.box.com/shared/static/vbyr3mry73je0phluh15y1f93am465j5.txt) (named object `RentalsData`). **Pivoting may not be necessary with the original `RentalsData`.**
+
+```{r notesweek04_05}
+Coordinates<-str_split(RentalsData$`Mappable Address`, "\\\n", simplify = TRUE)[,3]
+Coordinates00 <- str_remove_all(Coordinates, "\\)|\\,|\\(")
+Coordinates000 <- str_split(Coordinates00, " ", simplify = TRUE)
+RentalsData$Coordinates01 <- Coordinates000[,1]
+RentalsData$Coordinates02 <- Coordinates000[,2]
+```
+
+With this new version of the City of Urbana's Rental Inspection Grades Listing Data, suppose that we wanted the decimal values in columns Coordinates01 and Coordinates02 in a single column. To accomplish this, we can use the `pivot_longer()` function (within the **tidyverse**; **tidyr**) since would be making the data longer; we're adding more rows than there were originally.
+
+```{r notesweek04_06}
+RentalsData3 <- RentalsData %>%
+  pivot_longer(cols=c(Coordinates01,Coordinates02), names_to="Coordinate", values_to="Decimal" )
+
+head(RentalsData3)
+```
+
+That's it! We just increased the number of rows of `RentalsData` to 3460.
+
+Now, with this newly pivoted data, let's demonstrate "widening" the data. In this way, we want to increase the number of columns; essentially reverting back to the version of the data before "lengthening." **Notice that we first use the `arrange()` function to sort the Coordinate column.**
+
+```{r notesweek04_07}
+RentalsData4 <- RentalsData3 %>% 
+  arrange(Coordinate) %>% 
+  pivot_wider(names_from = Coordinate, values_from = Decimal)
+
+head(RentalsData4)
+```
+
+Done! Technically the number of columns did not increase, but the number of rows did decrease. This is another way to know that the "widening" worked appropriately.
+
+### <a name="transposing"></a>Transposing
+
+When it comes to transposing, all we're accomplishing is making the columns become the rows, alternating the dimension of the data: formerly row## by column## to presently column## by row##.
+
+```{r notesweek04_08}
+RentalsData5 <- t(RentalsData)
+
+dim(RentalsData)
+dim(RentalsData5)
+```
+
+We see the data went from 1738 by 9 to presently 9 by 1738. 
+
+
+***
+
+
+## <a name="data-reduction"></a>Data Reduction
+
+Below, I describe a few techniques that achieve data reduction also known as subsetting. Data reduction tasks, from a data wrangling perspective, are done by data workers so often that they become second nature. All methods in these notes belong in the tidyverse package (specifically dplyr) and are discussed in greater detail and with more examples in the Introduction to dplyr vignette https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html. **String manipulation is discussed later in the semester.** 
+
+### <a name="filtering"></a>Filtering rows
+
+We can select rows or observations through conditions with the `filter()` function in the tidyverse. Working with the City of Urbana's [Rental Inspection Grades Listing Data as comma-separated .csv](https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv), we can filter only the rows that have a grade of F.
+
+```{r notesweek04_09}
+library(tidyverse)
+rental_data <- read_csv("https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv", col_types = cols(`Inspection Date` = col_date(format = "%m/%d/%Y"), 
+        `Expiration Date` = col_date(format = "%m/%d/%Y")))
+
+rental_data %>%
+  filter(Grade=="Class F")
+```
+
+We can filter only the rows that have a grade of A or F (where the pipe key `|` means "or").
+
+```{r notesweek04_10}
+rental_data %>%
+  filter(Grade=="Class A" | Grade=="Class F")
+```
+
+We filter the rows corresponding to the a grade of A and expiration dates before the year 2021.
+
+```{r notesweek04_11}
+rental_data %>%
+  filter(Grade=="Class A", `Expiration Date`<"2021-01-01") %>%
+  arrange(`Expiration Date`)
+```
+
+### <a name="slicing"></a>Slicing rows
+
+Filtering rows works well when we know the data columns and values by name. But if that information is not as readily available, we can reduce the data using values that represent the row location via the `slice()` function.
+
+For the City of Urbana's Rental Inspection Grades Listing Data, we can slice rows 1000 to 1111.
+
+```{r notesweek04_12}
+rental_data %>%
+  slice(1000:1111)
+```
+
+We can show the first few rows with `slice_head()` or last few rows with `slice_tail()`.
+
+```{r notesweek04_13}
+rental_data %>%
+  slice_head(n=10)
+
+rental_data %>%
+  slice_tail(n=10)
+```
+
+We can also show the smallest parcel number (`slice_min()`) or largest parcel number (`slice_max()`). There's also a `slice_sample()` function that randomly selects rows.
+
+```{r notesweek04_14}
+rental_data %>%
+  slice_min(`Parcel Number`)
+
+rental_data %>%
+  slice_max(`Parcel Number`)
+```
+
+### <a name="selecting"></a>Selecting columns
+
+We can select certain columns using the `select()` function. Selecting can be helpful when we don't need all of a dataset's original columns.
+
+```{r notesweek04_15}
+rental_data %>%
+  select(`Mappable Address`)
+
+rental_data %>%
+  select(`Parcel Number`:`Mappable Address`)
+```
+
+We can de-select (drop) columns as well with the `minus` sign.
+
+```{r notesweek04_16}
+rental_data %>%
+  select(-c(`Mappable Address`, `License Status`, ends_with("Date")))
+```
+
+Or de-select columns with negation (where the exclamation mark `!` means "not").
+
+```{r notesweek04_17}
+rental_data %>%
+  select(!c(`Mappable Address`, `License Status`, ends_with("Date")))
+```
+
+The `ends_with()` function and its relative, `starts_with()` are **dplyr** selection helper functions that scan the columns of the data and only selects the column names that end with or start with the set of characters in the string. See [https://dplyr.tidyverse.org/reference/select.html](https://dplyr.tidyverse.org/reference/select.html) for more examples of selection helpers.
+
+### <a name="dropping"></a>Dropping missing values
+
+Missing values are often represented as `NA` (not available), `NaN` (not a number), ".", or " " in data. Missing values are slightly different from null values and unknown values. A missing value could be unknown or NULL or an actual value that just never made it into the data frame. 
+
+Null values (`NULL`) are undefined values often used in R coding to create empty objects. 
+
+Unknown values are usually noted or marked as "unknown" in a dataset. Older data might note a value as "9999" or "99999" to represent an unknown value. Unknown values are not necessarily missing when they are represented as "unknown" or "9999" within a dataset.
+
+How data workers handle missing values will vary. Imputation is a process of replacing missing values with real values, and this process requires lots of care, theory, and background knowledge about the non-missing data. For real data analysis, imputation may not make much sense, since the goal is to discuss the observed data. Here's a blog with several reviews of the standard textbooks in the field of missing data: https://thestatsgeek.com/stats-books/missing-data-books/. We won't discuss imputation in any meaningful way in this course.
+
+Instead, I'll mention that there is a tidyverse function for removing NA values called `drop_na()` if we ever need to do so. If you don't know a value is missing or not, you can use the base R function `is.na()`.
+
+```{r notesweek04_18}
+sum(is.na(rental_data$`Expiration Date`))
+
+rental_data %>%
+  drop_na(`Expiration Date`)
+```
+
+
+***
+
+
+## <a name="data-expansion"></a>Data expansion
+
+The methods in this section will be making the dataset larger in some way, usually by adding new columns of information. This does not include combining data, which will be discussed later in the semester.
+
+### <a name="renaming"></a>Renaming columns
+
+Renaming variables can be accomplished using `rename()` function and serves as a convenient was to change a column's name without an assignment operator. We place the new name on the left side of the `=` sign and the old name on the right side.
+
+```{r notesweek04_19}
+colnames(rental_data)
+
+rental_data %>%
+  rename(full_address=`Mappable Address`)
+
+colnames(rental_data)
+```
+
+### <a name="mutating"></a>Mutating columns
+
+The real power of data wrangling and to a larger extent, data science, is the ability to create columns of new information. Often, this new information is really just a function of existing information. But, usually that new information is what is needed for a later analysis. Recall that the work of data management and wrangling (read: STAT 440) is to do all the data work prior to an actual data analysis. 
+
+The `mutate()` function is what we'll use to create the new information and make that new information appears in the data set. Suppose we want to represent the Grades of the inspections as numbers and create a proportion from that new numeric grade. To accomplish this we might do:
+
+```{r notesweek04_20}
+rental_data02 <- rental_data %>%
+  mutate(grade_n = ifelse(Grade=="Class N", 1, Grade), 
+         grade_f = ifelse(Grade=="Class F", 2, grade_n),
+         grade_d = ifelse(Grade=="Class D", 3, grade_f),
+         grade_c = ifelse(Grade=="Class C", 4, grade_d),
+         grade_b = ifelse(Grade=="Class B", 5, grade_c),
+         grade_numeric = as.numeric(ifelse(Grade=="Class A", 6, grade_b)))
+rental_data02
+```
+
+```{r notesweek04_21}
+rental_data02 %>%
+  mutate(grade_prop = grade_numeric/6)
+```
+
+That's quite powerful! We mutated the data by using columns that we were in the process of mutating!! 
+
+In addition to the base R `ifelse()` function, there exists dplyr's `if_else()` and a vectorized version of `if_else()` called `case_when()`. Case when is much like a `switch` statement in other programming languages and SQL's `CASE WHEN`.
+
+#### END OF NOTES

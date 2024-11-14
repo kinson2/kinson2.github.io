@@ -1,0 +1,102 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Notes
+
+### Created by Christopher Kinson
+
+------------------------------------------------------------------------
+
+### Table of Contents
+
+-   [Managing Large Data](#largedata)\
+-   [Excerpts from Anthony Weston's book "Creativity for Critical Thinkers](#excerpts)
+    -   [Introduction](#intro)
+    -   [Method 1: Inviting exotic associations](#method01)
+    -   [Method 2: Multiplying your options](#method02)
+    -   [Method 3: Building on breakthroughs](#method03)
+    -   [Method 4: Reframing the problem](#method04)
+
+------------------------------------------------------------------------
+
+## <a name="largedata"></a>Managing Large Data
+
+Throughout this course we haven't discussed computer issues related to data size and computational capacity and memory allocation. What we have taken for granted is that through using the tidyverse, our machines can import large data in memory (in R) and perform any data wrangling tasks. What we know is that `read.csv()` is base R's data importing function and may struggle to import large data. The tidyverse's `read_csv()` struggle less with large data. The data.table's `fread()` struggles even less with large data. Anyways, read these notes [Large Data in R: Tools and Techniques](https://hbs-rcs.github.io/large_data_in_R/) and try the code within.
+
+## <a name="excerpts"></a>Excerpts from Anthony Weston's book "Creativity for Critical Thinkers"
+
+### <a name="intro"></a>Introduction
+
+As STEM majors, we tend to think about problem solving in a certain way. And at times, we might overlook how we came to have those thoughts. Or we may not consider other ideas about problem solving if they conflict with our own ideas. One of the big takeaways from Weston's book is to challenge the reader to put all those assertions to the side and approach problem solving with a fresh, open-minded, and expansive perspective. He discusses several methods for problem solving. I am posing the exercises as a way to connect the methods to real data in hopes that you will explore the data with openness and apply the methods.
+
+Exercises:
+
+1.  What ideas or words do you associate with the word "problem"?
+
+2.  What ideas or words do you associate with the word "data"?
+
+3.  What ideas or words do you associate with the word "exploration"?
+
+4.  Considering base R's `iris` dataset, what words do you associate with this data?
+
+### <a name="method01"></a>Method 1: Inviting exotic associations
+
+Start with a random prompt then ask what new ideas or associations it provokes when put together with your problem, question, or data. A random prompt can be anything, especially something in your presence. For examples, any of the following can be a prompt: a color, a letter of the alphabet, an object, a smell, a fruit fly on the wall.
+
+Exercises:
+
+1.  Take 30 seconds, look around you wherever you are in this moment, and write down as many prompts as possible.
+
+2.  Use the first prompt from the previous exercise (in this section) to write down questions about the `iris` data. Repeat for each prompt from the previous exercise.
+
+3.  Use each of the prompts from exercise 1 (in this section) to answer the following question. What improvements can we make to weather reporting and weather predictions that would be more easily understood by regular laypeople people (e.g. people without expertise in atmospheric sciences)?
+
+4.  Use each of the prompts from exercise 1 (in this section) to employ data wrangling methods for exploring/understanding more about the NUFORC UFO Sightings Data (located at <https://uofi.box.com/shared/static/8sf7ub4cwywnujs6ceic8317elgdznyj.csv>). Essentially ask yourself: if I were to use prompt X, can I show BLANK exists in the data?
+
+### <a name="method02"></a>Method 2: Multiplying your options
+
+Multiplying options may involve various approaches for creative exploration of ideas. The goal is to have many ideas for solving a single problem in hopes that there may be at least one workable solution. Here are some of the approaches.
+
+-   Brainstorm by accepting all new ideas without questioning their viability nor criticizing.
+
+-   Compare and contrast ideas. This entails finding places or scenarios that are opposite of what our experience is and exploring why that's the case.
+
+-   Exaggerate by expanding on a commonly accepted idea or solution to its extreme in order to come up with holes/possibilities for new ideas. By having a big clay of extreme possibilities, we may be able to shave down to a realistic solution.
+
+-   Mix and match ideas. This entails taking two ideas or existing things that are very different or have different purposes then brainstorm for possible solutions using both ideas or things. Weston's classic example is the fact that the standard pencil did not always have an eraser attached to its top. It is an example of its inventor mixing and matching two ideas: a drawing or marking tool and a material that removes those markings.
+
+Exercises:
+
+1.  Time yourself for 5 minutes and use brainstorming to write down as many questions as possible about the Lahman MLB Batting Data (located at `Lahman::Batting`).
+
+2.  Based on each of your questions from exercise 1 (in this section), use exaggeration to come up with solutions to the questions. Be as extreme as your mind can be.
+
+3.  Use mix and match to develop new data wrangling methods to help answer your questions from exercise 1 (in this section) about the Lahman MLB Batting Data (located at `Lahman::Batting`).
+
+### <a name="method03"></a>Method 3: Building on breakthroughs
+
+The guiding principle for this method is that creativity begins with the first breakthrough or solution; not ends. It would behoove us to extend this guiding principle to data analysis: data analysis does not end with the first analysis; it is only the beginning of a deeper understanding of the data.
+
+The building on breakthroughs method asks to consider the practical challenges to implementing your idea, then develop your idea to meet those challenges. Refine your original idea by making it more specific. Ask yourself where you might go next with your idea/suggestion/solution. Add onto your first creative breakthrough by using previous methods above about the same problem. Add onto your first creative breakthrough by using previous methods above about a different problem. Extend your creative solution to other, similar problems.
+
+Exercise:
+
+1.  Based on your new data wrangling methods developed in exercise 3 (in the previous section), build and redevelop your data wrangling methods to help answer your questions from exercise 1 (in the previous section) about the Lahman MLB Batting Data (located at `Lahman::Batting`).
+
+### <a name="method04"></a>Method 4: Reframing the problem
+
+Think laterally about solving the problem instead of coming up with straight solutions. This method suggests that workarounds are still solutions even if not direct. Reframing also means to think of the problem as the opportunity and potentially consider solutions that would prevent the problem from existing in the first place.
+
+Exercises:
+
+1.  What new data wrangling methods can you create (conceptually)? Write your ideas down using the reframing method.
+
+2.  Suppose all datasets were written on paper and not stored on computers. How would your new data wrangling methods need to be changed? What new methods can you create knowing that data is on paper only?
+
+3.  Apply your paper-data wrangling methods from exercise 2 (in this section) on the CTA Ridership 'L' Station Entries Daily Totals Data (located at <https://uofi.box.com/shared/static/2nk4zg0jbanfr6vz5jmjli9hsdp61agj.csv>).

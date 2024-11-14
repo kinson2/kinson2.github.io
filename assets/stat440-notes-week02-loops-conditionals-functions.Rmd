@@ -1,0 +1,576 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Notes
+### Created by Christopher Kinson
+
+
+***
+
+### Table of Contents
+
+- [Loops and conditional execution](#loops-and-conditional-execution)  
+  - [Conditional execution](#conditional-execution)  
+  - [Loops](#loops)  
+    - [Index-controlled loops: `for` loop](#index-controlled)
+    - [Condition-controlled loops: `while` loop](#condition-controlled-while)
+    - [Condition-controlled loops: `repeat` loop](#condition-controlled-repeat)
+- [Apply family of functions](#apply-family)  
+  - [Why apply?](#why-apply)  
+  - [`apply()`](#apply)  
+  - [`lapply()`](#lapply)  
+  - [`sapply()`](#sapply)  
+- [Vectorization](#vectorization)
+- [Introduction to Custom Data Management Tools i.e. Functions]("introduction-to-r-chapter10)
+  - [Custom Function](#functions)
+  - [Custom Binary Operators](#binary-operators)
+
+***
+
+
+## <a name="loops-and-conditional-execution"></a>Loops and Conditional Execution
+
+In R, expressions are **recursive** structures, much like functions, that make up the DNA of R itself. Expressions are objects that captures the structure of the code without evaluating it. Expressions may be quite complex `y ~ .` or surprisingly simple, e.g. `<-`. Expressions can be grouped with braces `{}` and often combined with loops and conditional execution. For example, when we make functions from scratch, we are calling the expression `function()` and placing all necessary code to perform the action of the function in curly braces `{}` as a **grouped expression**.
+
+### <a name="conditional-execution"></a>Conditional Execution
+
+The `if` statement requires a TRUE logical condition (expression) in order for the expressions to run. Multiple expressions, i.e. grouped expressions can be used which explains the `{}`.  Multiple conditions can be combined with logical operators `&` and `|`. The else is used if the user intends for an alternative set of expressions to be executed when the logical condition is FALSE.
+
+```
+if (condition) {
+  expressions
+  } else {
+    expressions
+  }
+
+if (condition) {
+  expressions
+  } else if (condition){
+    expressions
+  }
+  else if (condition){
+  expressions
+  }
+  else {
+  expressions
+  }
+
+if (condition1 & condition2){
+expressions
+}
+ else {
+ expressions
+ }
+ 
+if (condition1 | condition2){
+expressions
+}
+ else {
+ expressions
+ }
+```
+
+### <a name="loops"></a>Loops
+
+![](https://media.giphy.com/media/zA9wlONvvIorC/giphy.gif)
+
+We use loops:  
+
+- when we want to do repetitive actions on observations
+
+    - the repetitive actions happen in the loop body  
+
+- to show how values change over iterations
+
+- because we want efficient coding  
+
+- within loops, called nested loops, for more complicated calculations
+
+There are 2 main type of loops:  
+
+- **index-controlled** loops  
+
+    - actions are repeated for a predetermined number of times using an index or counter  
+
+- **condition-controlled** loops  
+
+    - actions are repeated once a condition is satisfied  
+
+    - condition checked at the bottom or at top of the loop
+
+#### <a name="index-controlled"></a>Index-controlled loops - `for` loop
+
+![](https://uofi.box.com/shared/static/w3k2i026vdbeh8c4f0f9d831sz83zmsp.png)
+
+The index is determined by the expression and changes each time the grouped expressions execute until the index reaches the maximum value of the expression. To stop the for loop, we must smartly utilize the dimension of the expression.
+
+```
+for (index in expression) {
+ expressions
+}
+```
+
+```{r}
+for(i in 1:6) print(1:i)
+```
+
+```{r}
+ab <- NULL
+matrix1 <- matrix(rnorm(200),ncol = 2)
+for(i in 1:10){
+  ab <- rbind(ab, matrix1[(10*(i-1)+1):(10*i),])
+}
+head(ab,10)
+```
+
+```{r}
+bc <- matrix(0, nrow = 100, ncol = 2)
+matrix1 <- matrix(rnorm(200),ncol = 2)
+for(i in 1:10){
+  bc[(10*(i-1)+1):(10*i),] <- matrix1[(10*(i-1)+1):(10*i),]
+}
+head(bc,10)
+```
+
+
+```{r}
+x <- 1:20
+for(i in 1:length(x)){
+  if(!(x[i] %% 2 == 0)) x[i] <- -x[i]
+}
+x
+```
+
+```{r}
+set.seed(13)
+nc <- nr <- 8
+mat <- matrix(0, nrow = nr, ncol = nc)
+for(i in 1:nr){
+  for(j in 1:nc){
+    z <- rnorm(1)
+    if(abs(z) > 1) mat[i, j] <- z
+  }
+}
+mat
+```
+
+#### <a name="condition-controlled-while"></a>Condition-controlled Loops - `while` loop
+
+![](https://uofi.box.com/shared/static/yppmp8paq4omoerstrg3zl8musmwg9c4.png)
+
+The `while` loop condition is checked at the top of the loop. Meaning, the logical condition should be TRUE at the very beginning before the grouped expressions can be repeated. Once the condition is FALSE, the loop stops.
+
+```
+while (condition) {
+ expressions
+ index <- index+1
+}
+```
+
+Some examples of the while loop.
+```{r}
+set.seed(13)
+cond <- TRUE
+i <- 1
+
+while(cond){
+  u <- runif(1)
+  if(u < 1/30) cond <- FALSE
+  cat("iteration: ", i, "unif: ", u, "\n")
+  i <- i + 1
+}
+```
+
+```{r}
+precision <- 0.001
+x <- 0.001 
+
+while(pgamma(x, shape = 1, rate = 1) < 0.95){
+  x <- x + precision
+}
+x
+```
+
+```{r}
+y <- 1:16
+head(y)
+i <- 1
+while (y[i] < 9){
+ plot(y[1:i], (y[1:i]-4)^2, type="l")
+ i <- i+1
+}
+```
+
+
+#### <a name="condition-controlled-repeat"></a>Condition-controlled Loops - `repeat` loop
+
+![](https://uofi.box.com/shared/static/goczm21xdujcqe94wgb2nis67zod7ta7.png)
+
+The grouped expressions execute until the condition is TRUE. When the condition is TRUE, the `break` statement provides the end and exit of the loop. Without the `break`, the loop never stops.
+
+```
+repeat{
+ expressions
+ index <- index +1
+ if (condition) break
+}
+```
+
+Some examples of the repeat loop.
+```{r}
+set.seed(13)
+i <- 1
+repeat{
+  print(i)
+  i <- i + 1
+  if(runif(1) < 1/30) break
+}
+```
+
+```{r}
+precision <- 0.0001
+x <- 0.001 
+repeat{
+  x <- x + precision
+  if(pgamma(x, shape = 1, rate = 1) > 0.95) break
+}
+x
+```
+
+
+***
+
+
+## <a name="apply-family"></a>Apply family of functions
+
+The apply family is a set of functions that can simplify complicated **for loop** coding.
+
+![](https://media1.tenor.com/images/f552638ff2e4099790a44c1ccf245301/tenor.gif?itemid=3965570)
+
+Taken from [The apply() family](https://www.datacamp.com/community/tutorials/r-tutorial-apply-family): The apply() family pertains to the R base package and is populated with functions to manipulate slices of data from matrices, arrays, lists and data frames in a repetitive way. These functions allow crossing the data in a number of ways and avoid explicit use of loop constructs. They act on an input list, matrix or array and apply a called function with one or several optional arguments.
+
+
+### <a name="why-apply"></a>Why apply?
+
+[Read this](https://nicercode.github.io/guides/repeating-things/). Highlights from this reading include:
+
+- Apply functions allow one to write **literate** code. On the other hand, **for loops** are not very expressible, i.e. they take a lot of code to do what you want.
+- **for loops** permit you to write bad code
+- variables created in the **for loop** are stored in the global environment, which is dangerous. [More on this](https://www.learncpp.com/cpp-tutorial/4-2a-why-global-variables-are-evil/). Mini-digression on this issue:
+
+
+**The code below is a demonstration. DO NOT go out of your way to declare an internal variable that is irrelevant to the task at hand.**
+
+```
+## for loop 
+n <- 100 # constant global variable that I want to keep set as stated
+data(iris) # load in data
+for(i in levels(iris$Species)){
+  n <- iris[iris$Species == i,]
+  print(mean(n$Petal.Length))
+}
+n # my constant global variable changed
+
+## Good apply function
+n <- 100 # constant global variable that I want to keep set as stated
+foo <- split(iris, f = iris$Species) # The split–apply–combine pattern
+lapply(foo, FUN = function(xx){      # The split–apply–combine pattern
+  n <- mean(xx$Petal.Length)
+})
+n # unaffected
+```
+
+**The code above is a demonstration. DO NOT go out of your way to declare an internal variable that is irrelevant to the task at hand.**
+
+
+### <a name="apply"></a>apply()
+
+- works on a **A**rray `X`
+- MARGIN is the dimension in which the function is applied
+- FUN should be the function we want to apply to the array
+
+```
+apply(X, MARGIN, FUN, ...)
+```
+
+```{r} 
+apply(iris[,-5], 2, FUN = function(a){sum(a)/length(a)})
+```
+
+**Why can't we use *`apply(iris, 2, FUN = function(a){sum(a)/length(a)})`*?**
+
+
+### <a name="lapply"></a>lapply()
+
+- works on a list `X`
+- returns a **l**ist of same length
+- FUN should be the function we want to apply to the list (element-wise)
+
+```
+lapply(X, FUN, ...)
+```
+
+```{r}
+abc <- list(a=1:10, b=2:10)
+lapply(abc, function(x) sum(x))
+```
+
+```{r} 
+output.lapply <- lapply(1:6, FUN = function(i) print(1:i))
+```
+
+```{r} 
+y <- lapply(1:1e4, FUN = function(j){ 
+  if(!(j %% 2 == 0)) -j
+  else j
+})
+head(y)
+```
+
+
+### <a name="sapply"></a>sapply()
+
+- works on a list `X`
+- returns a **S**implified object, either a vector or matrix (these are atomic structures)
+- FUN should be the function we want to apply to the list (element-wise)
+
+```
+sapply(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE)
+```
+
+```{r} 
+output.sapply <- sapply(1:6, FUN = function(i) print(1:i))
+```
+
+```{r} 
+x <- sapply(1:1e4, FUN = function(j){ 
+  if(!(j %% 2 == 0)) -j
+  else 2*j
+})
+head(x)
+```
+
+
+
+***
+
+
+## Vectorization
+
+Vectorization is a concept that will surely speed up computing time (compared to traditional loops) and works to optimize repeated operations. Vectorization occurs when a function or operation takes a vector of values as input, completes the function or operation on each element of the vector, and returns a vector (the same length as the input vector).
+
+Summarization occurs when a function or operation takes a vector as input, completes the function or operation, and returns a single value (effectively a summarized value). We discuss summarizing data in later in the semester.
+
+For more information on vectorization in R, do read **[The R Inferno](https://www.burns-stat.com/pages/Tutor/R_inferno.pdf)**, particularly Chapters 3-4.
+
+Arithmetic operators are vectorized in R.
+
+Here are some vectorized functions in base R: `ifelse()`, `is.na()`, `sqrt()`, `log()`, `abs()`. The `ifelse()` function is probably my favorite, because it combines logical operators, loops, and conditional execution to create a single vectorized function.
+
+Check the [RStudio dplyr cheat sheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) for useful functions that may be vectorized (or summarized).
+
+The code below shows an advantage in coding efficiency and readability through the use of vectorization.
+
+```{r vectorized}
+#not vectorized
+set.seed(13)
+n <- 10
+zz<-rep("",n)
+for (i in 1:n){
+ z <- rnorm(1) # generate normal random variable
+ if (abs(z) > 1) zz[i]="Yes!"
+}
+zz
+
+#vectorized
+set.seed(13)
+z<-rnorm(10)
+zz[abs(z)>1]<-"Yes!"
+zz
+```
+
+
+Working with an old version of the City of Urbana's [Rental Inspection Grades Listing Data](https://uofi.box.com/shared/static/drn7wsrxiyyfu1w8j0aflv2vn3adxnev.json), we can discuss how to get the information we want: the 1730 rows and 7 columns about the rental properties. One sure-way to do this is to use a `for` loop and we can combine this idea with vectorized function `ifelse()`.
+
+```{r}
+library(tidyverse)
+library(jsonlite)
+rd <- fromJSON("https://uofi.box.com/shared/static/drn7wsrxiyyfu1w8j0aflv2vn3adxnev.json")
+#names(rd)
+rd2 <- rd$data
+#length(rd2)
+#rd2[[1730]][[9]] #street address
+#rd2[[1730]][[10]] #parcel number
+#rd2[[1730]][[11]] #inspection date
+#rd2[[1730]][[12]] #grade
+#rd2[[1730]][[13]] #license status
+#rd2[[1730]][[14]] #expiration date
+#rd2[[1730]][[15]] #mappable address
+
+rd3 <- tibble(property_address="",parcel_number="",inspection_date="",grade="",license_status="",expiration_date="",mappable_address="",.rows=length(rd2))
+
+for (i in 1:length(rd2)){
+ rd3[i,1] <- ifelse(is.null(rd2[[i]][[9]]),"",rd2[[i]][[9]])
+ rd3[i,2] <- ifelse(is.null(rd2[[i]][[10]]),"",rd2[[i]][[10]])
+ rd3[i,3] <- ifelse(is.null(rd2[[i]][[11]]),"",rd2[[i]][[11]])
+ rd3[i,4] <- ifelse(is.null(rd2[[i]][[12]]),"",rd2[[i]][[12]])
+ rd3[i,5] <- ifelse(is.null(rd2[[i]][[13]]),"",rd2[[i]][[13]])
+ rd3[i,6] <- ifelse(is.null(rd2[[i]][[14]]),"",rd2[[i]][[14]])
+ rd3[i,7] <- paste(rd2[[i]][[15]][1],rd2[[i]][[15]][2],rd2[[i]][[15]][3],sep="|")
+}
+
+head(rd3)
+```
+
+We can accomplish this same thing with an `sapply()` and the `ifelse()` function.
+
+```{r}
+rd4 <- t(sapply(1:length(rd2),FUN = function(i){
+ c(ifelse(is.null(rd2[[i]][[9]]),"",rd2[[i]][[9]]),
+ ifelse(is.null(rd2[[i]][[10]]),"",rd2[[i]][[10]]),
+ ifelse(is.null(rd2[[i]][[11]]),"",rd2[[i]][[11]]),
+ ifelse(is.null(rd2[[i]][[12]]),"",rd2[[i]][[12]]),
+ ifelse(is.null(rd2[[i]][[13]]),"",rd2[[i]][[13]]),
+ ifelse(is.null(rd2[[i]][[14]]),"",rd2[[i]][[14]]),
+ paste(rd2[[i]][[15]][1],rd2[[i]][[15]][2],rd2[[i]][[15]][3],sep="|"))
+}, simplify="array"))
+
+head(rd4)
+```
+
+We could have also used `lapply()`, `ifelse()`, and `do.call()`.
+
+```{r}
+rd5 <- lapply(1:length(rd2),FUN = function(i){
+ c(ifelse(is.null(rd2[[i]][[9]]),"",rd2[[i]][[9]]),
+ ifelse(is.null(rd2[[i]][[10]]),"",rd2[[i]][[10]]),
+ ifelse(is.null(rd2[[i]][[11]]),"",rd2[[i]][[11]]),
+ ifelse(is.null(rd2[[i]][[12]]),"",rd2[[i]][[12]]),
+ ifelse(is.null(rd2[[i]][[13]]),"",rd2[[i]][[13]]),
+ ifelse(is.null(rd2[[i]][[14]]),"",rd2[[i]][[14]]),
+ paste(rd2[[i]][[15]][1],rd2[[i]][[15]][2],rd2[[i]][[15]][3],sep="|"))
+})
+rd6 <- do.call(rbind,rd5)
+
+head(rd6)
+```
+
+
+## <a name="introduction-to-r-chapter10"></a>Introduction to Custom Data Management Tools i.e. Functions
+
+Below, I introduce the idea of creating your own functions and data management tools. The bulk of this material is covered in STAT 385. One reference textbook for that course is [An Introduction to R. Venables, Smith and the R Core Team](https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf). Another useful reference textbook for that course is [Hands-On Programming with R by G. Grolemund's](https://rstudio-education.github.io/hopr/)
+
+The crux of what you do as a data engineer is create your own tools. These tools can greatly speed up data analysis, data wrangling, data visualization, modeling, etc. They speed up the processes because we can eliminate very specific redundant code, and utilize general flexible code that works for multiple uses and cases. 
+
+### <a name="functions"></a>Custom Functions
+
+R allows users to create their own functions (i.e. user-defined functions) AKA tools using the `function()`. User-defined functions can be created with 
+
+- \*arguments that may be named or unnamed; think of arguments as inputs 
+
+- expressions which are code that perform the actions; think of expressions as the body of the function
+
+- braces which wrap around the expressions
+
+- \*optional returned objects as outputs
+
+```
+newfunction <- function(namedarg=argument01){
+  expressions
+}
+```
+
+Using the function to see the results becomes:
+
+```
+newfunction(input)
+```
+
+Below, see the Figure 2.6 from G. Grolemund's Hands-On Programming with R that helps explain how functions are designed.
+
+![](https://rstudio-education.github.io/hopr/images/hopr_0106.png)
+
+Your custom functions can be complicated or simple. It will depend on the nature of what you want to build and your programming skill set. Here are some examples.
+
+1. A $t$-statistic for the two-sample case (found in the Introduction to R textbook)
+
+```{r}
+twosam <- function(y1, y2) {
+  n1 <- length(y1); n2 <- length(y2)
+  yb1 <- mean(y1); yb2 <- mean(y2)
+  s1 <- var(y1); s2 <- var(y2)
+  s <- ((n1-1)*s1 + (n2-1)*s2)/(n1+n2-2)
+  tst <- (yb1 - yb2)/sqrt(s*(1/n1 + 1/n2))
+  tst
+}
+twosam(rnorm(20),rnorm(20))
+```
+
+2. An $n$-dimensional correlation matrix with exchangeable correlation $\rho$
+
+```{r}
+exc <- function(n,rho){
+  mat <- array(rho,dim=c(n,n))
+  mat2 <- array(c(1:n,1:n),dim=c(n,2))
+  mat[mat2] <- 1 
+  mat
+}
+exc(5,0.5)
+```
+
+3. In STAT 385, we discussed card shuffling and the concept of randomization. Using the Uno deck of cards created as a dataset, we can create a function that shuffles the deck. This function is general because we supply the deck, and we do not require the function to use only the cards from those notes.
+
+```{r}
+cards_faces <- c(rep(c(0:9, 1:9, rep(c("Skip","Reverse","Draw+2"),2)), 4),rep(c("Wild","WildDraw+4"), each=4))
+cards_colors <- c(rep(c("red","blue","green","yellow"), each=25), rep("any",8))
+cards_points <- c(rep(c(0:9, 1:9, rep(20, 6)), 4), rep(50,8))
+cards_tibble <- tibble::tibble(face=cards_faces, color=cards_colors, point=cards_points)
+
+shuffle <- function(deck){
+  if(all(class(deck)!="data.frame")){
+    return("Not a data frame. Supply a data frame as input.")
+  }
+  else{
+    return(deck[sample(dim(deck)[1]),])
+  }
+}
+shuffle(cards_tibble)
+```
+
+**SN: Using the double colon notation `::`, we can call or reference a library for use with its particular functions. In this way, we don't have to use the `library()` function, but the package must be installed.**
+
+Pay close attention to the fact that objects created within the body of a function are not global/permanent objects in R's environment.
+
+```{r eval=FALSE}
+mat #this object doesn't exist
+```
+
+Functions create local/temporary objects that exist within the function and nowhere else. To your surprise, this is a good thing, because when global objects are referenced multiple times in a program. It may lead to confusion and lots of reviewing to find mistakes each time it's referenced. Read this https://www.learncpp.com/cpp-tutorial/why-global-variables-are-evil/ for more details.
+
+### <a name="binary-operators"></a>Custom Binary Operators
+
+Binary operators are special operators that take two arguments which are essentially one object on the left-hand-side and one object on the right-hand-side of the operator. We have seen at least one binary operator: the modulus `%%` when we wanted a vectorized way to identify if a number was prime or not.
+
+We can create user-defined binary operators with the `function()`, but we must name the object as `"%somethinghere%"`. Below is an example of a custom binary operator that identifies elements of the vectors that are not in common in both objects. This custom binary operator works much like the `setdiff()` function and is opposite of the `match()` function. The `match()` function and `%in%` binary operator are similar. `%in%` returns a logical vector of which values of the left-hand-side object appear in the right-hand-side object. The `match()` function goes an extra step and returns the positions of (first) matches of its first argument in its second.
+
+```{r}
+1:10 %in% 5:10
+match(1:10,5:10)
+```
+
+
+```{r}
+"%out%" <- function(LHS, RHS){
+  unique(LHS[is.na(RHS[match(LHS, RHS)])])
+}
+1:10%out%5:10
+setdiff(1:10,5:10)
+```
+
+#### END OF NOTES

@@ -1,0 +1,582 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+## Week 06 Notes
+### Created by Christopher Kinson
+
+
+***
+
+
+## Table of Contents
+
+- [Data Visualization in Tidyverse](#data-viz-Tidyverse)  
+- [Macro Elements](#data-viz-macro)  
+  - [Narrative](#data-viz-narrative)  
+  - [Plot Type](#data-viz-plot)  
+  - [Title](#data-viz-title)  
+  - [Axes](#data-viz-axes)  
+- [Micro Elements](#data-viz-micro)  
+  - [Plotting Characters](#data-viz-plotting)  
+  - [Color and Transparency](#data-viz-color)  
+  - [Width and Size](#data-viz-width)  
+  - [Quantity of Plots](#data-viz-quantity)  
+  - [Removing Clutter](#data-viz-removing)  
+  - [Employing Visual Hierarchy](#data-viz-employing)  
+
+
+***
+
+
+## <a name="data-viz-base"></a>Data Visualization in Tidyverse
+
+Plots, graphs, and visual charts are the most crucial tools we have as data analysts, statisticians, and data scientists. In the notes that follow, I will highlight Tidyverse plotting capabilities. Consider these notes as a reference for what's possible in R for data visualization (data viz for short). Most details you will need to explore on your own beyond these notes.
+
+For both base R and Tidyverse mechanisms, I will break down the data viz concepts into two sections: Macro and Micro elements of data viz.
+
+
+***
+
+
+## <a name="data-viz-macro"></a>Macro Elements
+
+The ggplot2 package is the main plotting package for the Tidyverse. Its main function is `ggplot()` function is quite powerful and flexible. If you are curious about more details regarding ggplot2, please read more in **R for Data Science** *Ch. 3 Data Visualization.* The `ggplot()` function itself only creates a blank canvas for the data viz and several functions specify the type of plot users intend to create. Which brings us to the Macro elements I believe are needed for any data viz.
+
+- Narrative
+
+- Plot type
+
+- Title
+
+- Axes
+
+We explain by example but first, let's import the [City of Urbana's Rental Inspection Grades Listings Data as comma-separated .csv](https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv).
+
+```{r}
+library(tidyverse)
+rentals_data <- read_csv("https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv", 
+    col_types = cols(`Inspection Date` = col_date(format = "%m/%d/%Y"), 
+        `Expiration Date` = col_date(format = "%m/%d/%Y")))
+str(rentals_data)
+```
+
+When creating data visualizations in RStudio, we have a couple ways to ensure that the images are plotted the way that we expect them to. In RStudio, the default plotting output is set to "Chunk Output Inline". This means that the plots will appear below the code chunk as a way to view them prior to rendering to html. 
+
+![](https://uofi.box.com/shared/static/tgfi52oe1jxl9iaa4cz9qwzvg0j09bny.png)
+
+However, the plots won't look the way they will once we render them. This is why we need to open the plot in a New Window and Maximize the window.
+
+![](https://uofi.box.com/shared/static/iw92so2508pwd16gqqiv7exlf9c0981z.png)
+
+![](https://uofi.box.com/shared/static/jrvpm8inftcq1pze6g2ewjwhwibbs8gs.png)
+
+![](https://uofi.box.com/shared/static/v9p3r3si5hvgfkkvsnv61vhj6lsithkd.png)
+
+Suppose you want the plots to appear in the Plots pane of RStudio. To do that, we change the plotting output to "Chunk Output in Console". 
+
+![](https://uofi.box.com/shared/static/lyzu9v0i4iu4uxvv1erghz11chdajbr4.png)
+
+Next, RStudio may ask if you want to remove "Current output" or "Keep output". Regardless of which you select, once you run the code chunk, the plot will appear in the Plots pane. 
+
+![](https://uofi.box.com/shared/static/2rrc4p1etbuul8xiqgwi311qeoqtugyb.png)
+
+We still need to view them in their maximized version, because the plots don't look the way they will when we render them. Thus, we click on Zoom in the Plots pane and we can see the maximized version of the plot. This is the way the plot will look when rendered to html.
+
+### <a name="data-viz-narrative"></a>Narrative
+
+Considering the narrative of your data viz is crucial to the final product meeting your expectations. Thinking about the narrative also allows for clear communication in the data viz to your audience. The following comes from Chapter 1 of Knaflic's [Storytelling with Data](https://www.storytellingwithdata.com/) book.
+
+**1. You need to know your audience.**
+
+- Audiences can be very detail-oriented, big-picture-oriented, or anywhere in between.
+
+- In this class, the audience is usually the Instructor, course staff, and your fellow classmates.
+
+- If you are employed, the audience may be your client, supervisor, or team.
+
+- You **must** to alter your narrative and resulting data visualization for your specific audience.
+
+**2. What do you want the audience to know or do?**
+
+**3. How you will you deliver what you want the audience to know?**
+
+- Consider what needs to happen in order for the visualization to be interpreted well. Do those things.
+
+- Creating simple storyboards with pen and paper will help in organizing your narrative and resulting data viz.
+
+
+### <a name="data-viz-plot"></a>Plot Type
+
+Statistics majors are likely to see or create these plots prior to graduation: scatter plot, bar plot, and time series plot. The type of plot you will need depends on the data and your narrative.
+
+For scatter plots using the function `geom_point()`, we plot two numeric vectors as aesthetics (`aes()` function) mappings `mapping=` argument. In the **rentals_data**, we don't have two purely numeric vectors. But let's imagine that the Parcel Numbers and the Address Number for the properties were intended to be shown in a scatter plot. Then the plot might be.
+
+```{r scatterplot}
+rentals_data2 <- rentals_data %>%
+  mutate(`House Number`=as.numeric(str_extract(`Property Address`, "\\d+"))) 
+
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x = `Parcel Number`, y = `House Number`))
+```
+
+
+Although it doesn't look great, we will address the other Macro elements and Micro elements to make the data viz better.
+
+As the name suggests, a time series plot (aka "index plot" aka "series plot") is a plot of a vector of values that have a time dimension. For the **rentals_data**, the number of inspections each date could be plotted as a time series. To accomplish this plot, we use the `geom_line()` function.
+
+```{r lineplot}
+inspection_dates_n <- rentals_data %>%
+  count(`Inspection Date`)
+
+inspection_dates_n %>%
+  ggplot() +
+  geom_line(mapping=aes(x = `Inspection Date`, y= n))
+```
+
+We can create a bar plot using the `geom_bar()` or `geom_col()` functions. In order for the `geom_col()` to work, we first use the `table()` function to explicitly count the frequencies for a factor/categorical variable. In order for the `geom_bar()` to work, the frequencies come directly from the data and not from a summary table. For the **rentals_data**, the frequency of Grades is sensible for a bar plot. That bar plot may be vertical as seen below.
+
+```{r barplot1}
+rentals_data %>%
+  count(Grade) %>%
+  ggplot() +
+  geom_col(mapping = aes(x = Grade, y = n))
+```
+
+Or horizontal bar plot.
+
+```{r barplot2}
+rentals_data %>%
+  count(Grade) %>%
+  ggplot() +
+  geom_col(mapping = aes(x = Grade, y = n)) +
+  coord_flip()
+```
+
+
+### <a name="data-viz-title"></a>Title
+
+The title of a plot is an immediate sign post to your audience. Usually, we use it to generalize the data viz, but at times, we may want to point out a particular detail. In any case, the title is created using the `title=` argument of the `labs()` function.
+
+```{r title}
+inspection_dates_n %>%
+  ggplot() +
+  geom_line(mapping=aes(x = `Inspection Date`, y= n)) +
+  labs(title="Number of Inspections Each Date")
+```
+
+
+Again, there are options within these functions which may be discussed in the Micro elements section.
+
+
+### <a name="data-viz-axes"></a>Axes
+
+The last Macro element to consider is the axis or the axes of the data viz. You should have noticed that the plots shown above have axis labels, ranges of values, and tick marks for certain values. Axes are crucial for understanding the scale of the information being plotted and the context of the units measured. For example, we can label the horizontal and vertical axes using the `x=` and `y=` arguments, respectively, in the `labs()` function. We can also change the range of values shown in the axes using the `xlim=` and `ylim=` arguments of the `coord_cartesian()` function.
+
+```{r}
+library(glue)
+inspection_dates_n %>%
+  ggplot() +
+  geom_line(mapping=aes(x = `Inspection Date`, y= n)) +
+  labs(title="Number of Inspections Each Date",
+       y="Frequency",
+       x=glue('Dates between {range(inspection_dates_n$`Inspection Date`)[1]} and {range(inspection_dates_n$`Inspection Date`)[2]}' )
+) +
+  coord_cartesian(ylim=c(0,25))
+```
+
+We used the `glue()` function here instead of `paste()` because `glue()` is in the Tidyverse, while `paste()` is base R.
+
+
+If we wanted even more control over the axis' lines and ticks and ranges of values for the axes, we can hide or suppress the default axes. Suppressing elements can be very specific to the element we want to suppress, but we usually need to change an argument's value to `element_blank()`. Often suppression comes through modifying the themes of a plot using the `theme()` function. See https://ggplot2.Tidyverse.org/reference/theme.html for more details on modifying themes.
+
+Some common details we can change in the axis include:
+
+- suppressing the label of the ticks using the `axis.text=element_blank()` of the `theme()` function
+  - specific to the horizontal axis `axis.text.x=element_blank()` of the `theme()` function
+  - specific to the vertical axis `axis.text.y=element_blank()` of the `theme()` function
+     
+- suppressing the tick marks using the `axis.ticks=element_blank()` of the `theme()` function
+  - specific to the horizontal axis `axis.ticks.x=element_blank()` of the `theme()` function
+  - specific to the vertical axis `axis.ticks.y=element_blank()` of the `theme()` function
+
+- show labels in angled (0-360 in degrees) orientation using the `axis.text=element_text(angle=)` of the `theme()` function
+  - specific to the horizontal axis using the `axis.text.x=element_text(angle=)` of the `theme()` function
+  - specific to the vertical axis using the `axis.text.y=element_text(angle=)` of the `theme()` function
+
+- location of the tick marks depends on which axis and value type
+  - horizontal axis containing continuous values using the  `scale_x_continuous(breaks=)`
+  - horizontal axis containing discrete values using the  `scale_x_discrete(breaks=)`
+  - horizontal axis containing date values using the  `scale_x_date(breaks=`
+  - vertical axis containing continuous values using the  `scale_y_continous(breaks=)`
+  - vertical axis containing discrete values using the  `scale_y_discrete(breaks=)`
+  - vertical axis containing date values using the  `scale_y_date(breaks=)`
+
+- changing the labels of the ticks depends on which axis and value type
+  - horizontal axis containing continuous values using the  `scale_x_continuous(labels= )`
+  - horizontal axis containing discrete values using the  `scale_x_discrete(labels= )`
+  - horizontal axis containing date values using the  `scale_x_date(labels= )`
+  - vertical axis containing continuous values using the  `scale_y_continous(labels=)`
+  - vertical axis containing discrete values using the  `scale_y_discrete(labels= )`
+  - vertical axis containing date values using the  `scale_y_date(labels= )`
+  
+```{r}
+inspection_dates_n %>%
+  ggplot() +
+  geom_line(mapping=aes(x = `Inspection Date`, y= n)) +
+  labs(title="Number of Inspections Each Date",
+       y="",
+       x="Dates") +
+  scale_y_continuous(breaks=seq(0,25,5)) +
+  scale_x_date(breaks=c(inspection_dates_n$`Inspection Date`[1],inspection_dates_n$`Inspection Date`[median(1:977)],inspection_dates_n$`Inspection Date`[nrow(inspection_dates_n)]), 
+               labels = as.character(c(inspection_dates_n$`Inspection Date`[1],inspection_dates_n$`Inspection Date`[ceiling(length(inspection_dates_n$`Inspection Date`)/2)],inspection_dates_n$`Inspection Date`[length(inspection_dates_n$`Inspection Date`)]))) +
+  theme(axis.ticks.y=element_blank())
+```
+
+There. We've discussed the Macro elements of any data visualization. Now let's deal with those pesky Micro elements.
+
+
+## <a name="data-viz-micro"></a>Micro Elements
+
+There's a wealth of details that can be added or adjusted to plots in base R. The details below are in my opinion, the Micro elements that every data visualization should address:
+
+- Plotting characters
+
+- Color and transparency
+
+- Width and size
+
+- Quantity of plots
+
+- Removing clutter
+
+- Employing visual hierarchy
+
+We explain by example.
+
+### <a name="data-viz-plotting"></a>Plotting Characters
+
+At times, it may be beneficial to use the specific plotting character functions such as `geom_point()`, `geom_line()`, and `geom_text()` or `annotate()` as an additional layer to the original plot type (see Macro Elements section above). All 3 functions behave similarly in that they need values for horizontal and vertical axis aesthetics mappings.
+
+Using the `geom_point()` function as a new layer for a series plot.
+
+```{r}
+ggplot(data=inspection_dates_n, mapping=aes(x = `Inspection Date`, y= n)) +
+  geom_line() +
+  labs(title="Number of Inspections Each Date",
+       y="",
+       x="Dates") +
+  geom_point(data = filter(inspection_dates_n, `Inspection Date`  == "2020-03-10"),size=10)
+```
+
+Using the `geom_line()` function as a new layer for a scatter plot.
+
+```{r}
+ggplot(data=rentals_data2, mapping = aes(x=`Parcel Number`,y=`House Number`)) +
+  geom_point() +
+  geom_line(mapping = aes(x = `Parcel Number`, y = rep(903,1738)))
+```
+
+Using the `geom_text()` or `annotate()` function as a new layer for a scatter plot.
+
+```{r}
+ggplot(data=inspection_dates_n, mapping=aes(x = `Inspection Date`, y= n)) +
+  geom_line() +
+  labs(title="Number of Inspections Each Date",
+       y="",
+       x="Dates") +
+  geom_text(data = filter(inspection_dates_n, `Inspection Date`  == "2020-03-10"), mapping=aes(label="PANDEMIC",size=10))
+```
+
+Truthfully, the `annotate()` function may be more similar to the base R `text()` function. 
+
+```{r}
+ggplot(data=inspection_dates_n, mapping=aes(x = `Inspection Date`, y= n)) +
+  geom_line() +
+  labs(title="Number of Inspections Each Date",
+       y="",
+       x="Dates") +
+  annotate("text",x=inspection_dates_n$`Inspection Date`[921], y=10, label="PANDEMIC\nSHUTDOWN\n2020-03-21", size=3,hjust=0.25) #as.numeric(as.Date("2020-03-10"))
+```
+
+Here's an example of a text plot, which is a data visualization that only includes text (strings) as plotting characters. In this example, we are showing the percentage of Urbana rental properties with owners claiming Urbana as their primary residence vs owners not residing in Urbana.
+
+```{r textplot}
+owners_addresses <- read_csv("https://uofi.box.com/shared/static/fh4phsjxzod704n0sigxn2iupgn5f026.csv")
+
+rentals_data02 <- bind_cols(rentals_data, owners_addresses) %>% 
+  mutate(UrbanaOwner=str_detect(name,"URBANA")*1.0)
+
+ggplot(data=inspection_dates_n, mapping=aes(x = `Inspection Date`, y= n)) +
+  geom_line(alpha=0) +
+  labs(title="The Marketshare of Urbana Rental Properties",
+       y="",
+       x="") +
+  annotate("text", x=c(inspection_dates_n$`Inspection Date`[floor(0.25*length(inspection_dates_n$`Inspection Date`))],inspection_dates_n$`Inspection Date`[floor(0.75*length(inspection_dates_n$`Inspection Date`))]), y=c(20,20), label=paste0(100*round(table(rentals_data02$UrbanaOwner)/sum(table(rentals_data02$UrbanaOwner)),3),"%"), size=20) +
+  annotate("text",x=c(inspection_dates_n$`Inspection Date`[floor(0.25*length(inspection_dates_n$`Inspection Date`))],inspection_dates_n$`Inspection Date`[floor(0.75*length(inspection_dates_n$`Inspection Date`))]), y=c(13,15), label=c("Owners Not\n Residing\n in Urbana","Owners Residing\n in Urbana"), size=8) + #),hjust=0.25)
+  theme(panel.background = element_blank(),axis.ticks = element_blank(), axis.text = element_blank())
+```
+
+
+### <a name="data-viz-color"></a>Color and Transparency
+
+We have a few ways to specify colors of plotting characters in the Tidyverse. We can specify the colors using the color's name in quotes with the `col=` argument. These colors, such as "red", exist and can be referenced with the vector `colors()`. Let's revisit the first plot, now using blue closed circles.
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color="blue")
+```
+
+
+Instead of the color's name, we can use a number for the colors which correspond to a specific short set of colors (1 to 8). These colors come from the default palette which can be seen using the `palette()` vector. Let's show specific color for the scatter plot with a number for the color.
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color=2)
+```
+
+We can specify a particular color based on its RGB (red, green, blue) value in the `color=` argument with the `rgb()` function taking values between 0 to 255 for each. Alternatively, we can use hexadecimal digits of the RGB values of the form `"#RRGGBB"` ranging from 00 to FF. These RGB values can be found using Eyedropper/Color Picker apps (see PowerPoint or Paint).
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color=rgb(232/255,74/255,39/255))
+```
+Using hexadecimal values. Also notice that the color argument exists outside of the `aes()` function.
+
+```{r}
+rentals_data %>%
+  count(Grade) %>%
+  ggplot() +
+  geom_col(mapping = aes(x = Grade, y = n), color="#13294B") +
+  coord_flip()
+```
+
+As a separate notion, grouped data can be colored as an aesthetic mapping with the `color=` argument of the `aes()` function.
+
+```{r}
+rentals_data %>%
+  count(Grade) %>%
+  ggplot() +
+  geom_col(mapping = aes(x = Grade, y = n, color=Grade)) +
+  coord_flip()
+```
+
+However, for bar plots in particular, to fill in the bars with colors based on a grouped variable, the `fill=` argument is preferred.
+
+```{r}
+rentals_data %>%
+  count(Grade) %>%
+  ggplot() +
+  geom_col(mapping = aes(x = Grade, y = n, fill=Grade)) +
+  coord_flip()
+```
+
+
+
+Rarely, you may want to add transparency to your color-filled characters to show how some values may intersect or to make some values less of the audience's focus. This can be accomplished using the `alpha=` argument within the `rgb()` function. The default value is `alpha=1` which means 0% transparency (or no transparency, i.e. opaque). Alpha values closer to 0 become more transparent, where `alpha=0` is 100% transparency.
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color=rgb(0,204/255,0,alpha=0.25))
+```
+
+Alternatively, the argument called `alpha=` directly addresses transparancy/opacity.
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color=rgb(0,204/255,0), alpha=0.25)
+```
+
+
+### <a name="data-viz-width"></a>Width and Size
+
+Here, I mean the size parameter for plotting characters, titles, and axes labels. Typically, we use the `size=` argument to control a plotting character's size. Additional controls for text or label size can be done with the `theme()` function. The default value is a size of 1 for plotting characters and a size of 10pt for text. You can imagine these sizes becoming as large or small as you wish.
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color=rgb(0,204/255,0), alpha=0.25, size=4) +
+  labs(title = "Parcel Numbers vs House Number") +
+  theme(axis.title = element_text(size=10), title = element_text(size=15))
+```
+
+
+### <a name="data-viz-quantity"></a>Quantity of Plots
+
+Facets allow plots to be segmented into multiple plots. Adding facets can be helpful for displaying various categories, levels, or discrete values for the data you're visualizing. It creates subsets of the data with headers in the plot to remind users of what's being shown. Typically, we can use the `facet_wrap()` function.
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color=rgb(0,204/255,0)) +
+  facet_wrap(vars(Grade)) +
+  labs(title = "Parcel Numbers vs House Number")
+```
+We can add controls for the layout as far as number of rows `nrow=` and columns `ncol=` of the `facet_wrap()` function.
+
+```{r}
+rentals_data2 %>%
+  ggplot() +
+  geom_point(mapping = aes(x=`Parcel Number`,y=`House Number`), color=rgb(0,204/255,0)) +
+  facet_wrap(vars(Grade), nrow = 3) +
+  labs(title = "Parcel Numbers vs House Number")
+```
+
+
+### <a name="data-viz-removing"></a>Removing Clutter
+
+Ideally we want to create data visualizations that are high signal (i.e. information we want to communicate) and low noise (i.e. distracting or useless information, aka clutter)
+
+- Clutter is any visual thing that does not increase your/our/the audience’s understanding.
+
+- When we take in information that is called cognitive load. The audience deserves low cognitive load.
+
+- Take care to remove clutter in your data viz!
+
+Removing clutter in data viz using base R might mean to consider removing lines, boxes, text, and any other elements that currently exist in order to create more whitespace.
+
+The following graphics comes from Chapter 3 of Knaflic's [Storytelling with Data](https://www.storytellingwithdata.com/) book. 
+
+![Before and after 1](https://uofi.box.com/shared/static/4e2usodrd4ghned1gkmv4p9ad45otrip.png)
+
+![Before and after 2](https://uofi.box.com/shared/static/i4mojymoxmdz0iezhln1fal3wq4lih5q.png)
+
+![Before and after 3](https://uofi.box.com/shared/static/gr3ec093u9uk5xdw4ps4n43ymgsf2k18.png)
+
+Here's an example using the Rentals Data, where we want to map the properties and guide the audience to particular information. In order to get that data, we must wrangle it using ideas from the Regex and string manipulation notes.
+
+```{r}
+Coordinates<-str_split(rentals_data$`Mappable Address`, "\\\n", simplify = TRUE)
+
+Coordinates[,1] <- str_replace(Coordinates[,1],"1\\s2","1/2")
+
+Coordinates <- as_tibble(Coordinates) %>%
+  mutate(City="Urbana", State="IL") %>%
+  select(-V2)
+Coordinates00 <- str_remove_all(Coordinates$V3, "\\)|\\,|\\(")
+Coordinates000 <- str_split(Coordinates00, " ", simplify = TRUE)
+
+RentalsData <- rentals_data %>%
+  mutate(Coordinates01 = as.numeric(Coordinates000[,1]),
+Coordinates02 = as.numeric(Coordinates000[,2]))
+
+c01 <- ifelse(RentalsData$Coordinates01<0,RentalsData$Coordinates02,RentalsData$Coordinates01)
+c02 <- ifelse(RentalsData$Coordinates02>0,RentalsData$Coordinates01,RentalsData$Coordinates02)
+
+RentalsData2 <- RentalsData %>%
+  mutate(Latitude = c01, Longitude = c02, City = Coordinates$City, State = Coordinates$State) %>%
+  select(-c(`Mappable Address`,Coordinates01,Coordinates02))
+
+rm(c01,c02,Coordinates00,Coordinates,RentalsData)
+gc()
+```
+
+Here's a basic plot of the Urbana Rental Properties.
+
+```{r}
+RentalsData2 %>%
+  ggplot() +
+  geom_point(mapping=aes(x=Longitude, y=Latitude)) +
+  labs(title = "Urbana Rental Properties")
+```
+
+
+Here's an improved plot that removes clutter.
+
+```{r}
+RentalsData2 %>%
+  ggplot() +
+  geom_point(mapping=aes(x=Longitude, y=Latitude),color="lightgray") +
+  labs(title = "Urbana Rental Properties") +
+  geom_point(x=-88.227244, y=40.109399, color=rgb(19/255,41/255,75/255), alpha=0.5, size=20) +
+theme(panel.background = element_blank(), panel.grid = element_line(color="gray", linetype=3)) 
+```
+
+### <a name="data-viz-employing"></a>Employing Visual Hierarchy
+
+Employing Visual Hierarchy is partly removing clutter and partly using preattentive attributes such as text size, text emphasis, color, and lines to draw the audience's eyes where you want them to go.
+
+The following graphic comes from Chapter 4 of Knaflic's [Storytelling with Data](https://www.storytellingwithdata.com/) book. Notice how your eyes navigate the image. Write down where your eyes go first, second, and third.
+
+![](https://uofi.box.com/shared/static/p1l9drfodgtoao54w11f4gom4hfnro6g.png)
+
+This kind of visual hierarchy can be employed in data viz as well by manipulating the Macro and Micro elements mentioned above. See Knaflic's graphics below for a transformation of data visualization beginning with a basic plot and becoming a plot that is informative and visually easy for the audience to navigate. Also notice the user's attention to detail regarding narrative. We can employ similar strategies in base R.
+
+![Basic plot](https://uofi.box.com/shared/static/2y3ppp8jbj3z2jniewj59fsw5sugobpe.png)
+
+![Better plot with colors guiding the eyes](https://uofi.box.com/shared/static/mu2cnwdr0bpzvglt30s3hpkbtdoogeul.png)
+
+![Informative with visual hierarchy and narrative](https://uofi.box.com/shared/static/crezwzlyb8jz2s4uy1pzrk36hqi10vmm.png)
+
+Here's an example using the Rentals Data, where we want to map the properties and guide the audience to particular information.
+
+Again, the original map.
+
+```{r}
+RentalsData2 %>%
+  ggplot() +
+  geom_point(mapping=aes(x=Longitude, y=Latitude)) +
+  labs(title = "Urbana Rental Properties") 
+```
+
+The de-cluttered map.
+
+```{r}
+RentalsData2 %>%
+  ggplot() +
+  geom_point(mapping=aes(x=Longitude, y=Latitude),color="lightgray") +
+  labs(title = "Urbana Rental Properties") +
+  geom_point(x=-88.227244, y=40.109399, color=rgb(19/255,41/255,75/255), alpha=0.5, size=20) +
+theme(panel.background = element_blank(), panel.grid = element_line(color="gray", linetype=3)) 
+```
+
+Next, we use some additional data wrangling.
+
+```{r}
+owners_addresses <- read_csv("https://uofi.box.com/shared/static/fh4phsjxzod704n0sigxn2iupgn5f026.csv")
+
+RentalsData3 <- RentalsData2 %>%
+  mutate(grade_n = ifelse(Grade=="Class N", 1, Grade), 
+         grade_f = ifelse(Grade=="Class F", 2, grade_n),
+         grade_d = ifelse(Grade=="Class D", 3, grade_f),
+         grade_c = ifelse(Grade=="Class C", 4, grade_d),
+         grade_b = ifelse(Grade=="Class B", 5, grade_c),
+         grade_numeric = as.numeric(ifelse(Grade=="Class A", 6, grade_b)),
+         grade_prop = grade_numeric/6)
+
+a_ids <- which(RentalsData3$Grade=="Class A")
+
+RentalsData4 <- bind_cols(RentalsData3, owners_addresses) %>% 
+  rename(OwnerAddress=name)
+  
+
+city3 <- str_split(RentalsData4$OwnerAddress, "\\n", simplify=TRUE)[,3]
+city4 <- str_split(RentalsData4$OwnerAddress, "\\n", simplify=TRUE)[,4]
+
+urbana_n<- sum(str_count(city3,"URBANA")+str_count(city4,"URBANA"))
+```
+
+
+Then comes the map employing visual hierarchy.
+
+```{r}
+ggplot(data=RentalsData4, mapping=aes(x=Longitude, y=Latitude)) +
+  geom_point(color="lightgray") +
+  labs(title = "Urbana Rental Properties") +
+  geom_point(x=-88.227244, y=40.109399, color=rgb(19/255,41/255,75/255), alpha=0.5, size=20) +
+  geom_point(data=filter(RentalsData4,Grade=="Class A"), color=rgb(232/255,74/255,39/255)) +
+  annotate("text", x=median(range(RentalsData4$Longitude))+0.02, y=median(range(RentalsData4$Latitude))+0.026, color=rgb(232/255,74/255,39/255), label="Grade A Properties") +
+  annotate("text", x=median(range(RentalsData4$Longitude))+0.02, y=median(range(RentalsData4$Latitude))+0.02, label=glue('Only {round(100*urbana_n/nrow(RentalsData4),2)}% of all Urbana\n rental properties are owned \nby people living in Urbana')) +
+theme(panel.background = element_blank(), panel.grid = element_line(color="gray", linetype=3))
+```
+
+
+#### END OF NOTES

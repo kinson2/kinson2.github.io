@@ -1,0 +1,446 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Notes
+### Created by Christopher Kinson
+
+
+***
+
+
+### Table of Contents
+
+- [Intro to course](#intro-to-course) 
+- [Rental Inspection Grades Listing Data](#rental-inspection-grades-listing-data) 
+- [Intro to software](#intro-to-software)
+  - [Tidyverse](#tidyverse)
+  - [Markdown](#markdown)
+  - [R, RStudio, and RMarkdown](#r-rstudio-rmarkdown)
+  - [Knitting and Rendering to Html](#knitting-and-rendering-to-html)
+  - [Git and GitHub](#git-gh)
+    - [Git](#git)
+    - [GitHub](#gh)
+- [Two Checkpoints in This Course](#two-checkpoints)
+  - [Retrieving an Assignment](#retrieving)
+  - [Submitting an Assignment](#submitting)
+- [Git and GH tips](#git-and-gh-tips)  
+  - [Tip 1. File names are important](#tip1)
+  - [Tip 2. File locations are important](#tip2)
+  - [Tip 3. Search online for resolving git troubles](#tip3)
+  - [Tip 4. Deleting your local remote almost always solves all git troubles](#tip4)
+  - [Tip 5. Clone a repo one time only](#tip5)
+  - [Tip 6. In GH, a file is never really deleted](#tip6)
+  - [Tip 7. Merge conflicts are mostly avoidable, but easily resolvable](#tip7)
+  - [Tip 8. Git will try to inform you of what's wrong and how to resolve it](#tip8)
+
+***
+
+
+## <a name="intro-to-course"></a>Intro to course
+
+Welcome to STAT 440/CSE 440! These are the course notes which can be found in the **course_content** repository or in GitHub. **The images/screenshots in these notes may refer to Spring 2021, but ignore that. The information is the accurate for this current semester.** The intent of this course is to discuss and demonstrate typical data wrangling and data management tasks for students who are comfortable using R. These notes are written ideally for the student who is unfamiliar with such tasks or who has not seen data wrangling tasks on real datasets. If you are a practicing data engineer, then these notes may not be useful.
+
+I live in Urbana. See image below.
+
+![](http://2012.igem.org/wiki/images/e/e2/Urbana.jpg)
+
+***This Photo by Unknown Author is licensed under CC BY***
+
+I like Urbana and because I'm a transplant I like to learn more about these twin cities in my spare time. One way I like to learn about things is through looking at data. We live in a technologically advanced world and there just so happen to be data portals about our locality.
+
+- [City of Urbana Open Data](https://data.urbanaillinois.us/) https://data.urbanaillinois.us/
+
+- [Champaign County Regional Data Portal](https://data.ccrpc.org/sv/) https://data.ccrpc.org/sv/
+
+
+***
+
+
+## <a name="rental-inspection-grades-listing-data"></a>Rental Inspection Grades Listing Data
+
+The City of Urbana Open Data portal has one particularly interesting dataset, the [Rental Inspection Grades Listing Data](https://data.urbanaillinois.us/Buildings/Rental-Inspection-Grades-Listing/tn7v-fm2b/data), that I will use as the main dataset to apply the data management concepts throughout this course and these notes.
+
+With this dataset, you will learn how to
+
+- access and import data  
+- scrape a website  
+- format and coerce data  
+- assign data as objects  
+- arrange and reshape data  
+- filter and select data  
+- mutate data  
+- implement loops and iterative execution for by-group processing  
+- use regular expression  
+- manipulate character strings  
+- validate data  
+- clean data  
+- summarize data  
+- combine data  
+- perform queries with SQL  
+
+But before we go any further, you should review the course syllabus (found in the **syllabus** directory of the **course_content** repository or [here](https://github.com/illinois-stat440/course_content/tree/main/syllabus)) and familiarize yourself with the software section. Below I say a bit more about the software used in this course and how it's going to help us. **I assume you have downloaded these necessary software at this point.**
+
+
+***
+
+
+## <a name="intro-to-software"></a>Intro to software
+
+This course has come a long way since its inception and early well-defined notes of Maria Muyot. This course now has no SAS offerings, but is catering to R and its recent tidyverse development. A recent addition to the course is the use of Git and GH. Git will serve as the course learning management system (LMS) and as a way for students to appreciate the advances of version control and collaboration.
+
+### <a name="tidyverse"></a>Tidyverse
+
+We will prefer the tidyverse over the base R functionality, because the tidyverse is almost always faster, can handle larger datasets, prefers simplified objects, and works well with URLs. The **tidyverse** is a collection of R packages and a workflow for working with data; see more details here https://www.tidyverse.org/. The tidyverse is supported by RStudio (the company). The packages that are installed and loaded when running the **tidyverse** package are:
+
+1. **ggplot2**  
+2. **dplyr**  
+3. **tidyr**  
+4. **readr**  
+5. **purrr**
+6. **tibble**  
+7. **stringr**  
+8. **forcats**  
+
+Other packages that are associated with the tidyverse workflow that we will utilize are: (9) **httr**, (10) **rvest**, (11) **jsonlite**, (12) **lubridate**, (13) **hms**, and (14) **glue**.
+
+There are other recent developments that drastically improve base R functionality such as the **data.table** package and workflow. We encourage students to explore any packages on their own, however, this course will focus on the tidyverse, and I am comfortable troubleshooting this collection of packages. If students are struggling with other packages, troubleshooting them will be that student's sole responsibility.
+
+### <a name="markdown"></a>Markdown
+
+Markdown is a markup language with special syntax used to craft and design simple yet flexible text documents. Markdown permits users to author HTML, PDF, and MS Word documents. Latex syntax can be included in Markdown syntax as well. Markdown was created by John Gruber in 2004 and has caught on in popularity. Markdown syntax is used as the main text styles within RMarkdown, Jupyter Lab, and Jupyter Notebooks.
+
+- Two nice references on Markdown syntax are https://www.markdownguide.org/basic-syntax/ and https://www.markdownguide.org/extended-syntax/. 
+
+Here are some frequent Markdown syntax examples:  
+
+  - **bold** text ( text enclosed with \*\* on both sides )
+  
+  - *italic* text ( text enclosed with \* on both sides )
+  
+  - lists (this is a list already) ( mark with \- )
+  
+  - tables ( pipes between columns and a new line with \-\-\-\|\-\-\- )
+  
+  Variable | Description
+  ---|---
+  Var1 | student ID
+  Var2 | height of students
+  
+  - hyperlinks for URLs ( paste the URL )
+  
+  https://www.markdownguide.org/
+  
+  - hyperlinks for URL images ( mark with \!\[\](pastedURL) )
+  
+  ![](http://2012.igem.org/wiki/images/e/e2/Urbana.jpg)
+
+
+### <a name="r-rstudio-rmarkdown"></a>R, RStudio, and RMarkdown
+
+**R** is a statistical programming language widely popular to statisticians in research and academia. It is free, open-source, and is being developed by its users to handle tasks beyond statistics and data science. We can code in R - usually in a **script** - and saved as a .R file. The output of the code we run is visible in the **console**.
+
+- Click here to download [R](https://cran.r-project.org/)
+
+- This is what R looks like  
+
+![](https://uofi.box.com/shared/static/zljyclm9yg3w2o6424byswhtz0d34ae6.png)
+
+#### Update to the latest version **`r version$version.string`** of your R! Proper functioning and accurate results often depends on the version you have!
+
+**RStudio** is an interface (formally known as an integrated development environment) for R that is relatively user-friendly, visually sufficient, and well-organized for content management. In RStudio, we could do almost everything we need for this course such as R calculations, install and update R packages, write **RMarkdown** (.Rmd) files and render or "knit" them .html, build websites and Shiny apps, etc.
+
+- Click here to download [RStudio](https://www.rstudio.com/products/rstudio/download/)
+
+- This is what RStudio looks like
+
+![](https://uofi.box.com/shared/static/8tj17602zn3owgs1mr7ahmd8c3u154pg.png)
+
+#### Update to the latest version of your RStudio!
+
+**RMarkdown** is a powerful package that allows us to create reproducible documents such that anyone on the planet can look at our code and get the same results. The other nice thing about reproducible documents is that we can have descriptions and directions written in narrative style along with code and results of that code. RMarkdown as a package comes pre-installed with RStudio but can be installed as a package in base R.
+
+RMarkdown documents are saved with the .Rmd file extension. This document that you are reading is an RMarkdown document, which as the name suggests is based on for Markdown syntax. 
+
+- For more details on using R Markdown see http://rmarkdown.rstudio.com.
+
+Thanks to RMarkdown, I can explicitly embed an R code chunk like this:
+
+```{r cars1}
+summary(cars)
+```
+
+The curly braces and the character "r" are required if you want the code to execute. ***We always want the code to execute!*** Also, notice that the word "cars" is written after the "r". In this case, "cars1" is a label for the code chunk. It is always recommended to have a label for all code chunks, but the labels must be unique for each code chunk. ***Using non-unique labels prevents the Rmd file from knitting.***
+
+### <a name="knitting-and-rendering-to-html"></a>Knitting and Rendering to Html
+
+For the assignments in this course, students will submit two files to their individual student repository, 1) .Rmd and 2) .html file. The .Rmd is the reproducible document file that contains your solutions to given assignments. These reproducible documents have a function that allows them to be rendered to a nicer web-browser-friendly format: .html. Students need to make sure they always submit both files by the deadline to receive a proper grade. Rendering to html can happen in two ways:
+
+1. Using RStudio, you click on the blue yarn ball icon "Knit" or the icon's "Knit" drop down button, then "Knit to HTML." See image below.
+
+![](https://uofi.box.com/shared/static/b0t8sfzjhh3aw978r2sey0ci4ksm4zh9.png)
+
+2. Alternatively, using R with the **rmarkdown** library installed, you use the `render()` function. See https://rmarkdown.rstudio.com/docs/reference/render.html for more details and examples.
+
+
+***
+
+
+### <a name="git-gh"></a>Git and GitHub
+
+**Git** is a version control system and **GitHub** (or GH) is one platform for uniting git commands with a collaborative workflow. Git and GH smooth collaboration by allowing multiple users to work on the same document on their own devices all at the same time. Then those users can submit their updates, describe their updates, and no one needs to rename the file. That file is updated in Git with the same file name it began with. Even if you are working alone on a code file, using version control can help alleviate confusion about what you were doing last time on that file. 
+
+#### <a name="git"></a>Git
+
+Git is the software that allows us to connect to repositories (or repos for short) and collaborate on projects that may exist in GH. Git does not have an interface, as it is the version control software itself. Usually, we have an interface to use git. That interface can be your local machine's terminal or command prompt: 'Terminal' (macOS/linux) or 'Git Bash' (Windows). Another interface can be a git client such as RStudio or GitHub Desktop. I'll say more about these and how to setup your connection to your repo in the sections below.
+
+Here are some Git terms (in alphabetical order) we need to become familiar with.
+
+- **branches**: pathways of the repo. We can work on branches without affecting the main and this may be useful for experimenting with something without affecting the main project.
+
+- **cloning**: copying an existing repo so that it can be accessed remotely on your local machine
+
+- **commit**: a snapshot of the last saved version of a file and the corresponding message explaining what changed in this version of the file
+
+- **diff**: the set of differences between commits; observing diffs helps keep track of what has changed across two commits
+
+- **directory**: a folder or sub-folder within a repository
+
+- **fetching**: downloading files (from a remote) that are not in your working directory
+
+- **history**: the tracking of all changes to a file
+
+- **main**: the main track of your repo. The main is also considered a branch. **GitHub used to call this branch as "master"**
+
+- **merge conflict**: when two separate branches have made edits to the same line in a file, or when a file has been deleted in one branch but edited in the other. Merge conflicts can be fixed by manually editing the problem file and then merging and re-committing/pushing.
+
+- **merging**: combines updated information into one single file and puts that on the main. Merging may be used to resolve conflicts when collaborators commit changes on the same file.
+
+- **pulling**: a single command that does both fetching and merging
+
+- **pushing**: finalizing and formalizing an updated file by adding the changes from your local working directory to GH
+
+- **remote**: the cloned repo
+
+- **repo (or repository)**: the main folder or space in which a project exists
+
+- **staging (or the staging area)**: a file that stores information about what's being committed. We want to stage a file after we've updated it in some way so that it can be committed
+
+#### <a name="gh"></a>GitHub
+
+In this course we are using **GitHub**, which we call "GH" for simplicity, as an LMS and as a tool for self-collaboration. **LMS means that GH will function as the main course space - students will retrieve assignments, submit their assignments in their individual student repos, see their grades, get course updates and announcements, communicate with each other and with the course staff, access necessary course content, etc. Here self-collaboration means that you will work on a file, such as a homework assignment, and make several commits for that file as you complete the problems. Each time you make a commit, it is best to push the file to your individual student repo to submit it. Thus, your file versions are only collaborated between you and yourself.** The course exists in GH at the website [https://github.com/illinois-stat440](https://github.com/illinois-stat440). The course website landing page is the README.md file, which will serve as the Course Announcements. You should check the course website frequently for updates and course announcements. Also, as the syllabus mentions, one of the main ways to communicate is in the Issues board, which functions as a discussion board much like Piazza. To access the Issues board, go to the **course_content** repo and click on the Issues tab. 
+
+
+***
+
+
+## <a name="two-checkpoints"></a>Two Checkpoints in this Course
+
+There are two major checkpoints in this course. These checkpoints refer to the two places for course materials: 1) the **course_content** repo and 2) **smYR_assignments_s1** or **smYR_assignments_s2**, where sm represents the current abbreviated semester (e.g. fa for fall, sp for spring, su for summer) and YR represents the current two-digit year (e.g. 23 for 2023 and 24 for 2024)
+
+The course-content repo will be where students can find the syllabus, notes, final project information, and solutions to assignments. Remember that the course_content repo is where the Issues tab (discussion board) lives. 
+
+The smYR_assignments_s1 or smYR_assignments_s2 will house branches for each assignment including piloted practices, labs, and exams. Assignments will be retrieved (via Git) from the respective smYR_assignments_s\* repo, but must be submitted into the student's own individual repo within the course organization (can be done via Git).
+
+We will utilize Git from the command line to access both checkpoints. Now' let's show how to retrieve and submit an assignment **piloted practice 01 (PP01)**. If students want to use alternative methods to access the checkpoints, please beware that the Instructor may not be able to assist in any troubleshooting encountered.
+
+
+In order to complete these procedures successfully, you must first do these four steps i)-iv):
+
+i) Log into GH at [https://github.com](https://github.com) with your netID and Illinois password. **If you've never used GH, then you will need to sign up for an account.** See image below.
+
+![](https://uofi.box.com/shared/static/egsfd2yfei6eylho5opd5ocw63ns4cij.png)
+
+ii) Create your individual student repo (named as your netID) by typing this URL in your browser and replacing sm with the current abbreviated semester and YR with the current year on this link https://edu.cs.illinois.edu/create-gh-repo/smYR_stat440, which also enrolls you into this course in GH. Follow all directions thereafter so that your repo can be created. **You may have to log into GitHub in a new tab or window and travel back to the repo creator link to complete remaining steps.** Afterwards, you should see something like this with your netID instead of kinson2. See image below.
+
+![](https://uofi.box.com/shared/static/y3hkzppjxuzkqlvrp4fmct84iyfcj3s4.png)
+
+iii) Install Git using this link [https://git-scm.com/downloads](https://git-scm.com/downloads). We will use Git from the command line, meaning that we will open Git Bash (Windows) or Terminal (Mac) to execute git commands. This software is what we need for retrieval and submission of assignments throughout the semester.
+
+iv) Clone your individual student repo. Do the following:
+
+  a. Go to the course website and click on your individual student repo. Your repo will not be called kinson2. See image for reference.
+
+  b. Click on the green Code button and copy the URL in that HTTPS textbox.
+
+  c. Open your Terminal (Macs) or Git Bash (Windows). Type the following code, executing at the end of each line. 
+  ```
+  cd Desktop
+  git clone PASTEURL netID
+  ```
+  - PASTEURL is the URL that you copied from the HTTPS textbox. netID is where you type your University netID. You will be prompted to authenticate your GitHub account. Completing these steps will create a directory on your Desktop named the same as your netID. This local directory is called a remote. You only need to create this particular remote once on your computer.
+
+![](https://uofi.box.com/shared/static/9pb4nsxtc8y0untt1f3zmrk0t9uocebd.png)
+
+With these initial steps completed, we can retrieve an assignment. The assignment is "pp01.Rmd", which stands for Piloted Practice Week 01. It is technically due 1 hour before the start of class on Monday. Each subsequent piloted practice is due 1 hour before the start of class on Mondays.
+
+### <a name="retrieving"></a>Retrieving an Assignment
+
+Follow these steps to retrieve an assignment.
+
+1. Go to GitHub and click on your respective section's **smYR_assignments_s\*** repo. Then, click on the green Code button and copy the URL in that HTTPS textbox.
+
+![](https://uofi.box.com/shared/static/qemf92d7b49jwr4kso5p2vxbejsulqn2.png)
+
+2. Open your Terminal (Macs) or Git Bash (Windows). 
+
+3. Navigate to the git remote of your GitHub individual student repo by typing the following code, executing at the end of each line.  
+  ```
+  cd Desktop/netID
+  ```
+
+4. Create a remote of your section's assignments repo for the course by typing the following code, executing at the end of each line.  
+  ```
+  git remote add stat440-assignments PASTEURL
+  ```
+  - PASTEURL is the URL of your section's assignments repo copied from the first step above.
+
+5. Retrieve the most recent assignments by typing the following code, executing at the end of each line.  
+  ```
+  git fetch stat440-assignments
+  ```
+
+6. Merge the specific assignment (and its directory) into your individual student remote by typing the following code, executing at the end of each line.  
+  ```
+  git merge stat440-assignments/ASSIGNMENTDIRECTORY -m "merging current assignments into my repo"
+  ```
+  - ASSIGNMENTDIRECTORY is the name of the directory for the assignment you need to retrieve and eventually submit upon completion. An example assignment directory is "piloted-practices". **During this step, Git may throw an error message about unrelated histories. If so type the following in your Terminal (Mac) or Git Bash (Windows).**
+  ```
+  git merge stat440-assignments/ASSIGNMENTDIRECTORY -m "merging current assignments into my repo" --allow-unrelated-histories
+  ```
+
+![](https://uofi.box.com/shared/static/wtv5857yqv0yhv82b4apczj90z9qlmgx.png)
+
+Now that the assignment (and its directory) is in your local remote (the local directory named as your netID), you can open it in RStudio and work on the assignment. After completing the assignment (typing your answers into the correct chunks), we can discuss how to submit the completed assignment.
+
+### <a name="submitting"></a>Submitting an Assignment
+
+As you are working on the retrieved assignment, you will probably save it a bunch of times. Remember that your file submission should have your netID in the file name (e.g. pp01-netID.Rmd). What you may fail to realize is that the file you are saving is local to your computer (it should be saved in your local remote named as your netID). Meaning, those saves do not appear in GH. If you want the local saves to appear in GH in your repo, then you need to commit and push the file(s). The act of committing and pushing is equivalent to submitting the assignment. The beauty is that you can submit an assignment as many times as you want in GH. The course staff will grade the most recent version that is pushed by that assignment's deadline. Follow these steps to submit an assignment.
+
+1. Open your Terminal (Macs) or Git Bash (Windows). 
+
+2. Navigate to the git remote of your GitHub individual student repo by typing the following code, executing at the end of each line. **Keep in mind that you may have already navigated there.** 
+  ```
+  cd Desktop/netID
+  ```
+
+3. Add all the files to your repo by typing the following code, executing at the end of each line.
+  ```
+  git add --all
+  ```
+  - If you know the specific files you want to add, then type the following instead.
+  ```
+  git add piloted-practices/pp01-netID.Rmd ADDITIONALDIRECTORIES/ADDITIONALFILES
+  ```
+  - ADDITIONALDIRECTORIES/ADDITIONALFILES may be written in this line separated by space. If the files are in specific directories in your remote, then you have to write those directory names with a forward slash preceding the file name and extension.
+
+4. Commit and push the files to your repo in GH by typing the following code, executing at the end of each line.
+  ```
+  git commit -m "Added assignment files from local computer"
+  git push origin main
+  ```
+
+![](https://uofi.box.com/shared/static/79yafj1oyacz44cfjznrvbbsebmx029h.png)
+
+Viola! You have submitted an assignment, probably "pp01-netID.Rmd". Remember that there's no need to wait until the last minute to submit assignments. Because of the power of version control, we can submit assignments numerous times as we begin each problem, with new commit messages to inform us of the changes appearing in the files.
+
+As a final comment on assignment submission, do verify that the assignment is in the appropriate place in GH. This means students should check their repo and any directories within to ensure their final submission is indeed the one they intended. The course staff grades student assignments based on files in their GH repo in the proper location. Files in incorrect locations or improper formats or incorrect submissions will not be graded. Thus a student can expect a 0 for that assignment.
+
+![](https://uofi.box.com/shared/static/dkl9f72x8jcie84p1dnapzzxu54nuj9k.png)
+
+
+***
+
+
+## <a name="git-and-ghe-tips"></a>Git and GH tips
+
+By now, you should be more comfortable retrieving files from GH and submitting files to your individual student repo in GH. This week, I want to give you some tips about using Git and GH so that you can be more confident when you encounter any trouble using this version control software.
+
+### <a name="tip1"></a>Tip 1. File names are important
+
+When naming files and folders (i.e. directories), use names that are obvious and signify what the file or folder is or for what it is intended.
+
+Notice that all files and folders in this course have a hyphen in between words and numbers immediately following letters. This is a representation of kebab case written as kebab-case. There are other cases, such as camelCase, PascalCase, or snake_case. For file and folder names in this course, please stick to the kebab-case. 
+
+**Working with Git from the command line involves using the Terminal (or Git Bash or Shell or Command Prompt), which may not work properly if the name of your file or folder contains spaces.** 
+
+Within the environment of your programming language, kebab-case will likely be inappropriate. The hyphen is often interpreted as a minus sign which will operate subtraction on objects on either side of the sign. Thus, when naming objects within a programming language, you should use either camelCase, PascalCase, or snake_case. Just be sure to be consistent and stick to one case.
+
+
+### <a name="tip2"></a>Tip 2. File locations are important
+
+I assume that you know your local machine (i.e. your computer) better than I do. I do not know where you store your files and in what folder those files belong. It is extremely important that you know. You need to know how to access files and folders on your machine. I explicitly placed the files and folders beginning on the Desktop. Most computers have a Desktop folder and that's why I gave those instructions. If you choose to put files in a location not mentioned in the notes, then you must be able to find those files if you ever run into trouble with Git in this course.
+
+### <a name="tip3"></a>Tip 3. Search online for resolving git troubles
+
+When ever you do run into trouble using Git (from the command line or using RStudio), I advise searching online for the exact error your machine is giving you. Usually an error appears with an error number or a note explaining the error. I suggest you type that number or that note directly into your Internet browser's search bar and add the word "git". That should point you to abundant resources for people who have the same trouble that you currently have. **It's highly unlikely that you are the first person ever to encounter that specific trouble with Git.**
+
+Of course, you can post the issue in the Issues board of the **course_content** repo at https://github.com/illinois-stat440/course_content/issues. Hopefully a fellow classmate or the course staff can assist you. You'll find that certain questions about Git and GH trouble have already been asked and/or answered there. **Please don't feel embarrassed about asking a question in the Issues. It's one of the best ways to show that you care about your education and that you want to learn more.**
+
+Jennifer Bryan et al have organized some of the most common troubles with R, RStudio and Git. Please read their Happy Git with R Chapter 14 https://happygitwithr.com/troubleshooting.html for resolutions.
+
+### <a name="tip4"></a>Tip 4. Deleting your local remote almost always solves all git troubles
+
+But it means that you will need to clone a repo over again. And it means that any progress you may have stored locally, could be lost. To avoid losing progress, on a homework assignment for example, move the problematic local remote folder to another directory. For example if you're struggling with submitting files to your individual student repo, then move the folder named as your netID from the "Desktop" to "Documents". Then clone your individual student repo again (placing the netID folder within the Desktop). Now place the files you were working on inside of this netID folder. Then try committing and pushing the files to your repo.
+
+### <a name="tip5"></a>Tip 5. Clone a repo one time only
+
+Only clone your repo one time on your local machine. Do not have multiples of the same remote repo (e.g. "netID") on the same computer. Doing this will make your life more difficult than it needs to be. If you have multiples of the same remote on the same machine, then delete all but one of these repos.
+
+### <a name="tip6"></a>Tip 6. In GH, a file is never really deleted
+
+This is one example of the power of version control. We can go into the history of any repo and of any file by clicking on "History" and clicking on the file we are interested in. See images below.
+
+![](https://uofi.box.com/shared/static/82vsyd7sqmtcy65fiubvuahccfb5yjw2.png)
+![](https://uofi.box.com/shared/static/22pk3ti1y5urv4f00906hqlz1zmea0ev.png)
+
+Then we can do something truly amazing! We can "travel back in time" to before the file was deleted and download that version of the file. In the image below, notice that when we travel back in time, the branch is not the main, but a particular commit ID. 
+
+![](https://uofi.box.com/shared/static/6s5o8bp8f121wefxp7lfwn39b285z0e2.png)
+
+To come back to the present time, simply click on the **course_content** repo link at the top of the page.
+
+You can do something similar using Git from the command line. See [Prof. Eck's Terminal Tricks](https://uofi.box.com/shared/static/5aupwf74o812ww33xymjc8h43fu92gco.html) for more details. 
+
+
+### <a name="tip7"></a>Tip 7. Merge conflicts are mostly avoidable, but easily resolvable
+
+Merge conflicts are unresolved differences in file versions when two separate branches have made edits to the same line in a file, or when a file has been deleted in one branch but edited in the other. 
+
+Merge conflicts are mostly avoidable by making sure you pull a repo before you begin committing and pushing files to that repo.
+
+Merge conflicts can be easily solvable by manually editing the problem file and then merging and re-committing/pushing.
+
+Merge conflicts do happen, but they mostly happen when bigger collaborations are taking place.
+
+### <a name="tip8"></a>Tip 8. Git will try to inform you of what's wrong and how to resolve it
+
+- Some of you may run into trouble with authentication because git does not 'know' you. See the image below for a common error about authentication.
+
+![](https://uofi.box.com/shared/static/ohzi33a5nzdy1h9tuy27j9kckknbvz46.png)
+
+- The image shows us two things: 
+
+  1. This student receives a fatal error where git explains that it cannot auto-detect the student's user name
+
+  2. To resolve the issue, git tells the student to run two lines of code from the command line.
+
+  ```
+  git config --global user.email "useremailaddress"
+  git config --glbal user.name "username"
+  ```
+
+- Another common error is related to students attempting to clone a single repo in a location where that repo already exists. Git will not allow for  duplicate repos in the same location. See the image below for the error message.
+
+![](https://uofi.box.com/shared/static/3zzkokfz2emwhmmpcmljrt9ouctrdshf.png)
+
+- To resolve it, simply clone in a new location or give it a new name.
+
+The takeaway is: read the error messages carefully, as they contain clues for troubleshooting.
+
+#### END OF NOTES

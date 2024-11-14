@@ -1,0 +1,152 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 10 Notes
+### Created by Christopher Kinson
+
+
+***
+
+### Table of Contents
+
+- [Assigning objects](#assigning-objects)  
+- [Accessing and importing data via Web scraping](#web-scraping)  
+- [Accessing and importing data via APIs](#api)  
+
+***
+
+
+## <a name="assigning-objects"></a>Assigning objects
+
+In R, object assignment is done with an assignment operator, `<-` as in `x<-10`. The equal sign also performs object assignment `x=10` in R. 
+
+We've already assigned objects in R. If you need proof, review the notes from previous weeks. With assigning objects, one important thing to notice is the acceptable naming conventions of your programming language. As mentioned in Tip 1, most programming languages won't like kebab-case. Thus, I advise you to use one of the following cases: camelCase, PascalCase, or snake_case. 
+
+
+***
+
+
+## <a name="web-scraping"></a>Accessing and importing data via Web scraping
+
+Web scraping can be a fun way to explore information provided on a website in order to store it and analyze it for statistical/academic purposes. 
+
+**Because the data contained in the City of Urbana's Data Portal is part of the US government, students outside of the US may have limited or no access based on their current government policies. Regardless, the web scraping section of the notes are still conceptually important. All students in this course are expected to learn and demonstrate their understanding of the concepts covered in these notes.**
+
+Recall, [City of Urbana's Rental Inspection Grades Listings Data - structured comma-separated](https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv) that I like so much. Notice that when we access and import it (the structured comma-separated file), we can get a better view of the columns.
+
+```{r webscraping01}
+library(tidyverse)
+
+rental_data <- read_csv("https://uofi.box.com/shared/static/y5rysysc7ycpe6nedwfzai58wkmqbtkw.csv") 
+
+head(rental_data)
+```
+
+This data is about housing that people pay rent money for and the grades of these housing units upon inspection. The specific columns are: Property Address, Parcel Number, Inspection Date, Grade, License Status, Expiration Date, and Mappable Address. 
+
+```{r webscraping02}
+colnames(rental_data)
+```
+
+If you've lived long enough to understand property, then you know that every county across America has public records of almost all properties and their owners. This includes Champaign County. These property records are stored by the [Office of the Champaign County Assessor](http://www.co.champaign.il.us/ccao/assessor.php). These housing units belong to property owners who may or may not live at the same address as the property they are renting. What if we were to look online, find the owner's name and address to see if it matches that of the property they're renting out? 
+
+First, let's go to the Property Record Search portion of the county's website. See image below.
+
+![](https://uofi.box.com/shared/static/fh5005iz3mei2hjqfyax2uxfx8l7w277.png)
+
+Which takes us here. See image below.
+
+![](https://uofi.box.com/shared/static/9aboknskqn4anvnndvels10qa23jml58.png)
+
+The property record search allows for searching by parcel number. Our dataset has a column by the exact same name. So let's try searching the records for the first parcel number in our dataset: 922116177018. See image below.
+
+![](https://uofi.box.com/shared/static/q2mp6tm2n4hvc257lewsiqtcsw80fvet.png)
+
+Running that search takes us here. See image below.
+
+![](https://uofi.box.com/shared/static/ki5lhg3hk7gcpiib9jhvz67w2no188wq.png)
+
+The owners of parcel number 922116177018 don't share the same address as the rental property address, at least not on record.
+
+Doing this would be tedious to do for all 1738 properties in this dataset. Web scraping is a data accessing tool that can automate the process of retrieving property owner information from the county's website.
+
+We will use the **rvest** package within the **tidyverse**, by Hadley Wickham, to scrape or harvest data from the Office of the Champaign County Assessor's website. I am basing the notes below on ["Harvesting the web with rvest"](https://rvest.tidyverse.org/articles/harvesting-the-web.html), an **rvest** vignette written by Demytro Perepolkin.
+
+We're going to go directly to the table containing the Owner Name and Address shown above and right-click on the section where the owner names appear. Click "Inspect" or "Inspect Page" and pay attention to the text highlighted in the image below.
+
+![](https://uofi.box.com/shared/static/5pwe0jjqk1g18dkkv8vnbolgtbwv30ln.png)
+
+This text (which is a series of HTML tags) is necessary for us to extract the owner names with **rvest**. The tags represent HTML reference points for how to identify the the information we truly want, which is in the table of Owner Name and Address. To figure out which html tags are going to get us what we need will take some trial and error. That's okay, but takes up time. Eventually we have our desired result (took me 30 minutes to try out several combinations of html tags) based on the two html tags: ".col-xs-4" and ".inner-value".
+
+```{r webscraping03a}
+library(rvest)
+
+prop1_url <- "https://champaignil.devnetwedge.com/parcel/view/922116177018/2021"
+
+html <- read_html(prop1_url)
+
+owners0 <- html_nodes(html, ".col-xs-4 .inner-value")
+
+html_text(owners0,trim=TRUE)
+```
+
+Because the value we want is the third element in the vector, we can subset further.
+
+```{r}
+html_text(owners0,trim=TRUE)[3]
+```
+
+Nice!
+
+But there's a better way!!
+
+Let's use the SelectorGadget tool! The SelectorGadget tool (read about it and set it up in your browser at [https://selectorgadget.com/](https://selectorgadget.com/)) allows to inspect the particular part of the web page and better narrow down the html tags. This saves time and greatly reduces the effort of trial and error to grab the information in the Owner Name and Address section of the website.
+
+Using this tool, we selected the table we want and de-selected the Site Address portion of the table next to it. Doing so improved the SelectorGadget estimate of the html tags we **do** want (seen at bottom highlighted in blue).
+
+![](https://uofi.box.com/shared/static/gc1jv0ysxqow90vgvzgxc9mvag21ztje.png)
+
+This resulted in two html tags: ".col-xs-4:nth-child(3)" and ".inner-value". Trying those two tags out results in the more direct Owner Name and Address information.
+
+```{r webscraping03b}
+owners <- html_nodes(html, ".col-xs-4:nth-child(3) .inner-value")
+
+html_text(owners, trim=TRUE)
+```
+
+Great! 
+
+We used web scraping to grab the first property's owner names according to the Parcel Number 922116177018, and the result shows the owner name and address separated by new line characters `\n`. Again, we see this information verifies that the owner address is not the same as the rental property's address.
+
+Now, let's do this for all properties. The key will be to loop or vectorize this process. **Actually in the chunk below I am only doing this for the first 5 properties since this process takes a long time for all 1738 properties.** The most important thing that is changing with each iteration of a loop should be the parcel number. We can use an index-controlled loop such that that the index value of parcel number column increments until we reach 1738. Putting it all together, we yield the following vector of owner names and address.
+
+```{r webscrapingloop, eval=FALSE}
+prop_url <- paste0("https://champaignil.devnetwedge.com/parcel/view/",rental_data$`Parcel Number`,"/2021")
+
+owners_addresses <- rep(0, length(prop_url))
+
+for (i in 1:5){ #running only the first 5 parcels
+  owners_addresses[i] <- html_text(html_nodes(read_html(prop_url[i]),".col-xs-4:nth-child(3) .inner-value"),trim=TRUE)
+}
+
+head(owners_addresses) #takes a long time if you attempt all 1738 parcels
+```
+
+Below is a final note on web scraping.
+
+Sometimes people abuse this exploration and overdo it on web scraping, which is why certain aspects of web scrapers are illegal or at the least, frowned upon. When you web scrape, be cautious of how often you are hitting a particular website. It might be best to do the scraping in chunks over a few days if you are attempting to gather lots of data.
+
+
+## <a name="api"></a>Accessing and importing data via APIs
+
+Read this resource [https://blog.hubspot.com/website/application-programming-interface-api](https://blog.hubspot.com/website/application-programming-interface-api) on understanding application programming interfaces (APIs).
+
+Read this resource [https://www.dataquest.io/blog/r-api-tutorial/](https://www.dataquest.io/blog/r-api-tutorial/) on accessing and importing data via APIs in R. Often, specific coding instructions will vary and change based on the specific API. It's best to view that API's documentation for specific syntax.
+
+#### END OF NOTES

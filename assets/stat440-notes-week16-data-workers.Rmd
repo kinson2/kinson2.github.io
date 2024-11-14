@@ -1,0 +1,134 @@
+---
+title: "STAT 440 Statistical Data Management"
+output: html_document
+---
+
+## Notes
+### Created by Christopher Kinson
+
+
+***
+
+
+## Table of Contents
+
+- [Data workers and their responsibilities](#data-workers)  
+  - [Data Engineer](#engineer)  
+  - [Data Architect](#architect)  
+  - [Data Analyst](#analyst)  
+  - [Data Scientist](#scientist)  
+- [My thoughts on the work of data workers](#thoughts) 
+  - [Thought 1](#thoughts01)  
+  - [Thought 2](#thoughts02)  
+- [Issues in data usage](#issues)  
+- [A data management set of morals](#morals)  
+
+
+***
+
+## <a name="data-workers"></a>Data workers and their responsibilities
+
+### <a name="engineer"></a>Data Engineer
+
+- Create and maintain data storage and access systems
+
+- Have a strong background in data processing, computer programming, and tool-making
+
+- May build internal products specifically for data such as data warehouses and automation processes
+
+- Works in collaboration with data scientists and analysts 
+
+- Someone you may know in this role: Ben Galewsky at the National Center for Supercomputing Applications (NCSA)
+
+
+### <a name="architect"></a>Data Architect
+
+- Design structures for data access and usage
+
+- Have a strong background in data structures, computer programming, and database management
+
+- May design pipelines for data to be used within a company
+
+- Works in collaboration with company administrators
+
+- Someone you may know in this role: Ben Galewsky at the National Center for Supercomputing Applications (NCSA)
+
+
+### <a name="analyst"></a>Data Analyst
+
+- Produces statistical results and interprets them
+
+- Have a strong background in data analysis, statistical theory, and communication
+
+- May write reports and give presentations for clients inside or outside of the company
+
+- Works in collaboration with data scientists and engineers or clients
+
+- Someone you may know in this role: Gus Theofanis at State Farm
+
+
+### <a name="scientist"></a>Data Scientist
+
+- Search, uncover, explain underlying features in data
+
+- Have a strong background in statistics, machine learning, and computer science
+
+- May build supervised or unsupervised procedures for feature detection and prediction
+
+- Works in collaboration with data engineers and analysts
+
+- Someone you may know in this role: Prof. Victoria Stodden at the iSchool
+
+***
+
+## <a name="thoughts"></a>My thoughts on the work of data workers
+
+### <a name="thoughts01"></a>Thought 1
+
+**As data engineers who might work with data to be distributed to the public, we must be very careful to omit information that might identify individuals or their whereabouts.**
+
+- Research areas include: privacy-preserving data analysis, statistical disclosure control, inference control, privacy-preserving data-mining, & private data analysis
+
+- Fields of study or disciplines include: databases, cryptography, computer science, & statistics
+
+- Articles or research papers:
+["Differential Privacy"](https://web.cs.ucdavis.edu/~franklin/ecs289/2010/dwork_2008.pdf) by Cynthia Dwork; ["De-anonymizing Social Networks"](https://www.cs.utexas.edu/~shmat/shmat_oak09.pdf) by A. Narayanan and V. Shmatikov
+
+### <a name="thoughts02"></a>Thought 2
+
+**When scraping a website, we must be sure of certain permissions to use information and be aware of intellectual property rules.**
+
+- Research areas include: big data, markup languages, machine learning, internet research ethics
+
+- Fields of study or disciplines include: information science, data science, ethics, intelligence law
+
+- Articles or research papers: ["Ethics in Web Scraping"](https://towardsdatascience.com/ ethics-in-web-scraping-b96b18136f01) by James Densmore; ["A primer on theory-driven web scraping: Automatic extraction of big data from the Internet for use in psychological research"](https://search-proquest-com.proxy2.library.illinois.edu/docview/1790926611?accountid=14553) by Richard Landers, et al 
+
+***
+
+## <a name="issues"></a>Issues in data usage
+
+- Data usage issues are complications that we should seriously or think about when using, sharing, or accessing data
+
+- Certain datasets may contain information that will be damaging if in the wrong hands
+
+- Public privacy, user anonymity, data ownership, and cyberbullying are all revolving topics around security  
+  - See [Google's definitions of some anonymization techniques it uses to protect user personal information and how they are derived from industry standards](https://policies.google.com/technologies/anonymization?hl=en-US)
+
+- Companies have limits for ill-behaving users of their products, but those limits are not all encompassing
+
+- Data and technological advances are really only as smart as the users who create them
+  - See [https://blog.conceptnet.io/posts/2017/how-to-make-a-racist-ai-without-really-trying/](https://blog.conceptnet.io/posts/2017/how-to-make-a-racist-ai-without-really-trying/) and its R analog [https://notstatschat.rbind.io/2018/09/27/how-to-write-a-racist-ai-in-r-without-really-trying/](https://notstatschat.rbind.io/2018/09/27/how-to-write-a-racist-ai-in-r-without-really-trying/)
+  
+
+***
+
+## <a name="morals"></a>A data management set of morals
+
+We wield lots of power in our skill set, and we must practice data wrangling with a sense of morality to do no harm and to tell the *whole* truth.
+
+What will be your set of morals and behaviors when you work with data in the future? What stories and messages will you convey with data? Will you remove observations in order to make a result look better? Will you re-scale a variable to exaggerate the effect of a negative statistic?
+
+Read a more constructed version of a set of morals called the [Feminist Data Manifest-No](https://www.manifestno.com/) about data that is inclusive of multiple communities of people and cognizant of the power data workers wield. The authors of this manifestno are: Cifor, M., Garcia, P., Cowan, T.L., Rault, J., Sutherland, T., Chan, A., Rode, J., Hoffmann, A.L., Salehi, N., Nakamura, L.
+
+#### END OF NOTES
