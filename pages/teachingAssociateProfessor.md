@@ -18,5 +18,5 @@ I have had a chance to serve on a few committees in the Department of Statistics
 
 ## <a name="cv"></a>Curriculum Vitae
 
-Here's a [pdf of my CV](https://uofi.box.com/shared/static/556sj1imscoopqd0uxt8491jtf9fuei7.pdf).
+Here's a [pdf of my CV](https://uofi.box.com/shared/static/tfn0if5bxkri6wjazrlk8dqzyhj3qtuf.pdf).
 
