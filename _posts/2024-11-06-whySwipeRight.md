@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Paper Accepted: Why Swipe Right? Career Interests and Aspirations of Incoming Statistics Majors"
+title: "Paper Published: Why Swipe Right? Career Interests and Aspirations of Incoming Statistics Majors"
 author: "Christopher Kinson"
 categories: teaching, research
 tags: [teaching, research]
