@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Blue After-Party"
+title: "Blues After-Party"
 author: "Christopher Kinson"
 categories: dj
 tags: [dj, about]
