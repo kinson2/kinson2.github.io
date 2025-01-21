@@ -7,7 +7,7 @@ tags: [dj, about]
 image: JONTAVIOUS-WILLIS-BLUES-AFTER-PARTY05.png
 ---
 
-West Georgia native blues artist, Jontavious Willis, is performing at Krannert Center on Friday January 24. If you don't have tickets, you can buy them here https://krannertcenter.com/events/jontavious-willis-band#.
+West Georgia native blues artist, Jontavious Willis, is performing at Krannert Center on Friday January 24. If you don't have tickets, you can buy them here [https://krannertcenter.com/events/jontavious-willis-band#](https://krannertcenter.com/events/jontavious-willis-band#).
 
 If the performance schedule doesn't work with your schedule, you can come to the Blues After-Party at Bruce D. Nesbitt African American Cultural Center (BNAACC) on 9:30pm-11:30pm and located at 1212 W. Nevada St. Urbana, IL 61801. This is a free event and you may even meet the Grammy-nominated artist himself.
 
