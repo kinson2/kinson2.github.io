@@ -34,7 +34,7 @@ Now that you have successfully joined the course and created your individual stu
 ## <a name="cloning"></a>5. Cloning your individual student repo
 Now that you have authorized your account for Git, you can clone your repo, which makes a copy of your repo at the time of cloning. This cloned repo is unique and will live on your computer's Desktop location. All of your assignment files associated with this course will need to be located in this cloned repo. This cloned repo may also be considered a **remote** for your repo. Again, if at some point your computer asks you for your Git password, then use the hashed value (PAT) that was copied above. If you have never cloned your individual student repo, then follow all the details in this section below. You should only have to clone your individual student repo once. **Beware any future Git issues might require deleting your remote and cloning your individual student repo over again.**
 
-  1. Go to the course website and click on your individual student repo, which will be named as 'sp24_stat385_netID', where your netID replaces `netid`. Alternatively, click on https://github.com/illinois-stat440/sp24_stat440_netID, where your netID replaces `netid`.
+  1. Go to the course website and click on your individual student repo, which will be named as 'su25_stat385_netID', where your netID replaces `netid`. Alternatively, click on https://github.com/illinois-stat440/su25_stat440_netID, where your netID replaces `netid`.
   2. Click on the green Code button and copy the URL in the HTTPS textbox.
   3. Open your computer's command-line interface (either Terminal, Git Bash, or RStudio) and type the following commands, executing each line individually, where your netID replaces `netid`. You may be prompted to authenticate your GitHub account. **The `cd` command means to "change directory". If you are not sure of your current location in your computer's system, type `pwd`, which means "print working directory" and execute. If you ever navigate into a directory that you want to navigate out of, type `cd ..` to move out of that directory.**
   ```
@@ -42,12 +42,12 @@ Now that you have authorized your account for Git, you can clone your repo, whic
   cd Desktop
   cd ..
   cd Desktop
-  git clone https://github.com/illinois-stat385/sp24_stat385_netID.git
+  git clone https://github.com/illinois-stat385/su25_stat385_netID.git
   ```
   4. You may be prompted to authenticate in order to complete the cloning successfully.
   5. To know whether your cloning was successful, type the following commands, where your netID replaces `netid`.
   ```
-  cd sp24_stat385_netID
+  cd su25_stat385_netID
   ls
   ```
   6. If you see a README.md, then your cloning was successful.
@@ -60,7 +60,7 @@ Now that you have cloned your individual student repo, you can retrieve any newl
   ```
   pwd
   cd Desktop
-  cd sp24_stat385_netID
+  cd su25_stat385_netID
   ```
   3. Create a remote of your section's course_content repo for the course by typing the following command. 
   ```
@@ -90,7 +90,7 @@ Now that you have retrieved a new assignment, you can open it in RStudio (or you
   1. Open your computer's command-line interface (either Terminal, Git Bash, or RStudio) and type the following commands, executing each line individually, where your netID replaces `netid`. **Depending on your current working directory, you may need to navigate to the Desktop differently or with fewer or more `cd` commands.**
   ```
   pwd
-  cd Desktop/sp24_stat385_netID
+  cd Desktop/su25_stat385_netID
   ```
   3. Stage all the newly saved files in your repo by typing the following command and executing. **Alternatively, instead of staging all recently saved files in your repo, you may want to stage a specific file. To do this for homework01, the command would be `git add homework/homework01-netID.Rmd`. Follow this naming structure for other ASSIGNMENTDIRECTORY/FILENAME.EXTENSION.**
   ```
@@ -101,7 +101,7 @@ Now that you have retrieved a new assignment, you can open it in RStudio (or you
   git commit -m "Added assignment files from local computer"
   git push origin main
   ```
-  5. To know whether your submission was successful, go to your individual student repo in GitHub at https://github.com/illinois-stat385/sp24_stat385_netID, where your netID replaces `netid`. Look at the commit history. Look at the ASSIGNMENTDIRECTORY and the most recent file within. Open the file in your browser and check if your code was saved in the code chunks of that .Rmd file. If you see your code in the code chunks in that .Rmd file, then your submission is successful.
+  5. To know whether your submission was successful, go to your individual student repo in GitHub at https://github.com/illinois-stat385/su25_stat385_netID, where your netID replaces `netid`. Look at the commit history. Look at the ASSIGNMENTDIRECTORY and the most recent file within. Open the file in your browser and check if your code was saved in the code chunks of that .Rmd file. If you see your code in the code chunks in that .Rmd file, then your submission is successful.
   6. Double-check the official syllabus and verify that you have avoided mistakes that the autograder will penalize.
 
 
