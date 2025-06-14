@@ -78,7 +78,7 @@ After watching the lecture videos, we encourage students to read the notes which
 
 - [key-functions-week01](https://uofi.box.com/shared/static/n9iuf1fhb8uctdyoh2xmftqmh91vle90.rmd)
 
-After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments.
+After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments, which are due at 11:59 pm on Friday June 20, 2025.
 
 1. [gdp01](https://github.com/illinois-stat385/course_content/discussions/2)
 
@@ -134,7 +134,7 @@ After watching the lecture videos, we encourage students to read the notes which
 
 - [key-functions-week02](https://uofi.box.com/shared/static/b35saqkm5in4lctoh0qprnh5sodpy6m0.r)
 
-After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments.
+After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments, which are due at 11:59 pm on Friday June 27, 2025.
 
 1. [gdp02](https://github.com/illinois-stat385/course_content/discussions/3)
 
@@ -190,7 +190,7 @@ After watching the lecture videos, we encourage students to read the notes which
 
 - [key-functions-week03](https://uofi.box.com/shared/static/09ql0tmv723llj5y2uemfvkpxs4h6p5r.rmd)
 
-After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments.
+After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments, which are due at 11:59 pm on Friday July 4, 2025.
 
 1. [gdp03](https://github.com/illinois-stat385/course_content/discussions/4)
 
@@ -246,7 +246,7 @@ After watching the lecture videos, we encourage students to read the notes which
 
 - [key-functions-week04](https://uofi.box.com/shared/static/jkbfrz5cyh2z22opu25gpbea9ckt7jrh.r)
 
-After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments.
+After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments, which are due at 11:59 pm on Friday July 11, 2025.
 
 1. [gdp04](https://github.com/illinois-stat385/course_content/discussions/5)
 
@@ -308,7 +308,7 @@ After watching the lecture videos, we encourage students to read the notes which
 
 - [key-functions-week05](https://uofi.box.com/shared/static/05kvqjw5hm64p12870ridm1lttnftql3.rmd)
 
-After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments.
+After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments, which are due at 11:59 pm on Friday July 18, 2025.
 
 1. [gdp05](https://github.com/illinois-stat385/course_content/discussions/6)
 
@@ -360,7 +360,7 @@ After watching the lecture videos, we encourage students to read the notes which
 
 - [key-functions-week06](https://uofi.box.com/shared/static/wr707o051d76rpgwx0iqhme3c7bprbio.r)
 
-After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments.
+After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments, which are due at 11:59 pm on Friday July 25, 2025.
 
 1. [gdp06](https://github.com/illinois-stat385/course_content/discussions/7)
 
@@ -402,7 +402,7 @@ After watching the lecture videos, we encourage students to read the notes which
 
 - [key-functions-week07](https://uofi.box.com/shared/static/0vg7amsei1p7madoh95d7u2syp9xf4f7.r)
 
-After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments.
+After reading, watching, and digesting the course materials above, we encourage students to begin the assignments of the week. Below you will find the two assignments, which are due at 11:59 pm on Friday August 1, 2025.
 
 1. [gdp07](https://github.com/illinois-stat385/course_content/discussions/8)
 
