@@ -428,7 +428,7 @@ We encourage students to watch the lecture videos below and review videos from a
 
 After watching the lecture videos, we encourage students to re-read the notes and practice code therein as it may be helpful when creating the final project .R file.
 
-Because the final project is the only assignment left, we encourage students to review the final project description in the syllabus.
+Because the final project is the only assignment left and due at 11:59 pm on Friday, August 8, 2025, we encourage students to review the final project description in the syllabus.
 
 Although this is the last week of the semester, the course staff, i.e. Professor Christopher Kinson and TA Lam Lam Hui, are still here to help and educate. The following are opportunities for learners to get help in their learning and skill building ordered by day of the week.
 
