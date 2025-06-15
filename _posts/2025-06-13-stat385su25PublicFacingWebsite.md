@@ -95,6 +95,8 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 - [TA Hui's Office Hour on Friday 09:00 am - 10:00 am in Zoom](https://illinois.zoom.us/j/87274879340?pwd=alrCJW3Z5HxIAyl5nB4KKc0qGmfkDa.1)
 
+- [Special One Time Only - Professor Kinson's Office Hour on Friday 06:30 pm - 07:30 pm in Zoom](https://illinois.zoom.us/j/86753094732?pwd=8641l0xlmUYLlXsAF3Gczi8JJfbwek.1) 
+
 ------------------------------------------------------------------------
 
 ## <a name="week02"></a>Week 2 
