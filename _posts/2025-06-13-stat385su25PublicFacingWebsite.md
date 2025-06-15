@@ -282,6 +282,7 @@ The following are readings which will be helpful in first learning the course ma
 
 6. [Grolemund's Environments](https://rstudio-education.github.io/hopr/environments.html)
 
+7. [Gagolewski's Functions](https://deepr.gagolewski.com/chapter/170-function.html#)
 
 After completing the readings, we encourage students to begin watching the lecture videos below.
 
@@ -337,8 +338,6 @@ The following are readings which will be helpful in first learning the course ma
 2. [Grolemund's S3](https://rstudio-education.github.io/hopr/s3.html)
 
 3. [Gagolewski's S3 Classes](https://deepr.gagolewski.com/chapter/220-s3.html)
-
-4. [Gagolewski's Functions](https://deepr.gagolewski.com/chapter/170-function.html#)
 
 
 After completing the readings, we encourage students to begin watching the lecture videos below.
