@@ -91,7 +91,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 - [Course Staff Forum Hour on Wednesday 06:30 pm - 07:30 pm in Zoom](https://illinois.zoom.us/j/85122609277?pwd=HENyrF4sc2UBGTZvRw9sUfCxHawGV5.1)
 
-- [Professor Kinson's Office Hour on Thursday 06:30 pm - 07:30 pm in Zoom](https://illinois.zoom.us/j/83652382670?pwd=6PXtgeapefQ2zFiX6pdtKuQvMHbsM0.1)
+- [CANCELLED DUE TO HOLIDAY - Professor Kinson's Office Hour on Thursday 06:30 pm - 07:30 pm in Zoom](https://illinois.zoom.us/j/83652382670?pwd=6PXtgeapefQ2zFiX6pdtKuQvMHbsM0.1) 
 
 - [TA Hui's Office Hour on Friday 09:00 am - 10:00 am in Zoom](https://illinois.zoom.us/j/87274879340?pwd=alrCJW3Z5HxIAyl5nB4KKc0qGmfkDa.1)
 
