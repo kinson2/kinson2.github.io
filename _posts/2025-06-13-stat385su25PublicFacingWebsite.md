@@ -423,13 +423,13 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week08"></a>Week 8 
 
-This is the last week of the course. There is no new material for this week. Learners are encouraged to spend ample time working and fine-tuning their final projects for this course.
+This is the last week of the course. There is no new material for this week. Learners are encouraged to spend ample time working and fine-tuning their final projects for this course. Review the [final project guidelines and grading rubric](https://uofi.box.com/shared/static/e1eagifpaflrgv9sgkq9fgqd0wn6lc8x.md).
 
 We encourage students to watch the lecture videos below and review videos from all previous weeks.
 
 After watching the lecture videos, we encourage students to re-read the notes and practice code therein as it may be helpful when creating the final project .R file.
 
-Because the final project is the only assignment left and due at 11:59 pm on Friday, August 8, 2025, we encourage students to review the final project description in the syllabus.
+Because the final project is the only assignment left and due at 11:59 pm on Friday, August 8, 2025, we encourage students to review the [final project details](https://uofi.box.com/shared/static/e1eagifpaflrgv9sgkq9fgqd0wn6lc8x.md).
 
 Although this is the last week of the semester, the course staff, i.e. Professor Christopher Kinson and TA Lam Lam Hui, are still here to help and educate. The following are opportunities for learners to get help in their learning and skill building ordered by day of the week.
 
