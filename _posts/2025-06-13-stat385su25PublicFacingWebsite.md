@@ -73,6 +73,8 @@ After completing the readings, we encourage students to begin watching the lectu
 
 - [More key R functions for Week 1, Vectorization vs summarization, Practice submitting an assignment via Git commands](https://mediaspace.illinois.edu/media/t/1_9oigdalc)
 
+- [Using GitHub from the browser to submit and retrieve assignments, Creating a directory in a repo on the main branch using GitHub from the browser, How to save and knit a homework assignment](https://mediaspace.illinois.edu/media/t/1_bau9trxk)
+
 
 After watching the lecture videos, we encourage students to read the notes which serve as highlights of important concepts based on the readings and lecture videos. The notes are below.
 
