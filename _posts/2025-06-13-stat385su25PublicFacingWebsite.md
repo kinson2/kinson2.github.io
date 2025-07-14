@@ -28,9 +28,10 @@ image: stat385-cover-art.png
 
 ------------------------------------------------------------------------
 
+
 ## <a name="week01"></a>Week 1
 
-This is the first week of class. It is of critical importance you read the [syllabus](https://chriskinson.com/stat385Su25), especially the Software section to download and install necessary technologies: [R](https://cran.r-project.org/), [RStudio Desktop](https://posit.co/download/rstudio-desktop/), and [Git](https://git-scm.com/downloads). We begin with an introductory exploration of R, RStudio, and Git. There are various objects in R that are foundational to our ability to program. Each R object has associated properties and purposes. These objects may be of different types and modes. We use R via the integrated development environment, RStudio Desktop. It is a helpful, user-friendly layout space for programming and creating various files. RStudio works with .R script files and reproducible document files such as .Rmd and can knit a reproducible document to .html and other formats. Git and GitHub are critical to submitting assignments in this course. Each student has a repo in this course that they made via following the instructions of the syllabus Software section [Step 2. Create a GitHub account if you don’t have one already and Sign into GitHub](https://github.com/), [Step 3. Click here to enroll in STAT 385 course organization and follow the steps to be setup properly in the learning management system](https://edu.cs.illinois.edu/create-gh-repo/su25_stat385). Each repo has a main branch, which serves as the landing page of the repo. We will place files into directories on the main branch of our repos. For example, when you complete homework01, you will submit it into the homework directory. Grades will be returned to students on a grades branch for the corresponding week. Because of the file organization on branches, it's important to learn about Git commands and how to navigate the branches.
+This is the first week of class, 06/16/2025 - 06/22/2025. It is of critical importance you read the [syllabus](https://chriskinson.com/stat385Su25), especially the Software section to download and install necessary technologies: [R](https://cran.r-project.org/), [RStudio Desktop](https://posit.co/download/rstudio-desktop/), and [Git](https://git-scm.com/downloads). We begin with an introductory exploration of R, RStudio, and Git. There are various objects in R that are foundational to our ability to program. Each R object has associated properties and purposes. These objects may be of different types and modes. We use R via the integrated development environment, RStudio Desktop. It is a helpful, user-friendly layout space for programming and creating various files. RStudio works with .R script files and reproducible document files such as .Rmd and can knit a reproducible document to .html and other formats. Git and GitHub are critical to submitting assignments in this course. Each student has a repo in this course that they made via following the instructions of the syllabus Software section [Step 2. Create a GitHub account if you don’t have one already and Sign into GitHub](https://github.com/), [Step 3. Click here to enroll in STAT 385 course organization and follow the steps to be setup properly in the learning management system](https://edu.cs.illinois.edu/create-gh-repo/su25_stat385). Each repo has a main branch, which serves as the landing page of the repo. We will place files into directories on the main branch of our repos. For example, when you complete homework01, you will submit it into the homework directory. Grades will be returned to students on a grades branch for the corresponding week. Because of the file organization on branches, it's important to learn about Git commands and how to navigate the branches.
 
 The following are readings which will be helpful in first learning the course material for this week.
 
@@ -93,7 +94,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 - [Course Staff Forum Hour on Wednesday 06:30 pm - 07:30 pm in Zoom](https://illinois.zoom.us/j/85122609277?pwd=HENyrF4sc2UBGTZvRw9sUfCxHawGV5.1)
 
-- ~~Professor Kinson's Office Hour on Thursday 06:30 pm - 07:30 pm in Zoom~~
+- ~~Professor Kinson's Office Hour on Thursday 06:30 pm - 07:30 pm in Zoom~~ 
 
 - [TA Hui's Office Hour on Friday 09:00 am - 10:00 am in Zoom](https://illinois.zoom.us/j/87274879340?pwd=alrCJW3Z5HxIAyl5nB4KKc0qGmfkDa.1)
 
@@ -103,7 +104,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week02"></a>Week 2 
 
-This week we acknowledge that we have an introductory understanding of R, RStudio, and Git. This week, we dive more into R. There are various objects in R and vectors are among the simplest of R's objects. These vectors are atomic meaning they are of a single type - logical, numeric, character, complex, raw. Each object has associated properties, such as mode and length, which we may later call attributes. Vectors can be indexed or subset based on vectors of various types. Types can be changed implicitly (coercion) and explicitly (type casting) in R. Additional key R functions are discussed in the lecture videos.
+This week, 06/23/2025 - 06/29/2025, we acknowledge that we have an introductory understanding of R, RStudio, and Git. This week, we dive more into R. There are various objects in R and vectors are among the simplest of R's objects. These vectors are atomic meaning they are of a single type - logical, numeric, character, complex, raw. Each object has associated properties, such as mode and length, which we may later call attributes. Vectors can be indexed or subset based on vectors of various types. Types can be changed implicitly (coercion) and explicitly (type casting) in R. Additional key R functions are discussed in the lecture videos.
 
 The following are readings which will be helpful in first learning the course material for this week.
 
@@ -158,7 +159,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week03"></a>Week 3
 
-In this week, we introduce other objects - matrices, arrays, factors, lists, and data frames. These objects are critical for working with R and considering how data can be accessed. Some objects are atomic, e.g., `matrix()` and `factor()`, while others are recursive, e.g., `list()` and `data.frame()`. Some objects are basic, e.g., `list()`, while others are compound, e.g., `matrix()`, `factor()`, `data.frame()`. Matrices are a special type of array - a two-dimensional array. Arrays are of general dimension such that the user must specify the dimension and its attributes. Lists are generic vectors meaning that they are very flexible. Lists are recursive objects too in the sense that they can contain lists themselves. In R, data frames are always lists, but lists are not always data frames. Additional key R functions are discussed in the lecture videos.
+In this week, 06/30/2025 - 07/06/2025, we introduce other objects - matrices, arrays, factors, lists, and data frames. These objects are critical for working with R and considering how data can be accessed. Some objects are atomic, e.g., `matrix()` and `factor()`, while others are recursive, e.g., `list()` and `data.frame()`. Some objects are basic, e.g., `list()`, while others are compound, e.g., `matrix()`, `factor()`, `data.frame()`. Matrices are a special type of array - a two-dimensional array. Arrays are of general dimension such that the user must specify the dimension and its attributes. Lists are generic vectors meaning that they are very flexible. Lists are recursive objects too in the sense that they can contain lists themselves. In R, data frames are always lists, but lists are not always data frames. Additional key R functions are discussed in the lecture videos.
 
 The following are readings which will be helpful in first learning the course material for this week.
 
@@ -214,7 +215,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week04"></a>Week 4 
 
-We've covered several data objects or structures used in R. Now we move into certain flows of programming including conditionals (`if` and `else`) and loops (`for` and `while`). We also discover some potential problems with naively created loops and objects. Burn's informs us that growing objects in R costs us memory and time, which can have devastating effects in programming efficiency. With these flows and well-understood objects, we can add specific efficient repetition to our programming. And there is power in repetition for us as statisticians. Additionally, we cover common regular expression syntax and R functions - some that employ regex and some that do not - to manipulate character vectors.
+We've covered several data objects or structures used in R. Now, 07/07/2025 - 07/13/2025, we move into certain flows of programming including conditionals (`if` and `else`) and loops (`for` and `while`). We also discover some potential problems with naively created loops and objects. Burn's informs us that growing objects in R costs us memory and time, which can have devastating effects in programming efficiency. With these flows and well-understood objects, we can add specific efficient repetition to our programming. And there is power in repetition for us as statisticians. Additionally, we cover common regular expression syntax and R functions - some that employ regex and some that do not - to manipulate character vectors.
 
 The following are readings which will be helpful in first learning the course material for this week.
 
@@ -270,7 +271,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week05"></a>Week 5
 
-This week, the readings cover how to define custom functions and common pitfalls of the concept vectorization. There is also an in-the-weeds discussion of R's environments and how to take advantage of that knowledge when creating objects and functions in R. User-defined functions are critical for building programs in R. Programs are essentially big functions that likely have considerate user-friendliness in their design. It is a good idea to practice making user-defined functions often during this chapter. Learners are encouraged to try all exercises in the readings for practice.
+This week, 07/14/2025 - 07/20/2025, the readings cover how to define custom functions and common pitfalls of the concept vectorization. There is also an in-the-weeds discussion of R's environments and how to take advantage of that knowledge when creating objects and functions in R. User-defined functions are critical for building programs in R. Programs are essentially big functions that likely have considerate user-friendliness in their design. It is a good idea to practice making user-defined functions often during this chapter. Learners are encouraged to try all exercises in the readings for practice.
 
 The following are readings which will be helpful in first learning the course material for this week.
 
@@ -325,7 +326,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 - [Course Staff Forum Hour on Wednesday 06:30 pm - 07:30 pm in Zoom](https://illinois.zoom.us/j/85122609277?pwd=HENyrF4sc2UBGTZvRw9sUfCxHawGV5.1)
 
-- [Professor Kinson's Office Hour on Thursday 06:30 pm - 07:30 pm in Zoom](https://illinois.zoom.us/j/83652382670?pwd=6PXtgeapefQ2zFiX6pdtKuQvMHbsM0.1)
+- [Professor Kinson's Office Hour on Thursday 05:30 pm - 06:30 pm in Zoom](https://illinois.zoom.us/j/83652382670?pwd=6PXtgeapefQ2zFiX6pdtKuQvMHbsM0.1)
 
 - [TA Hui's Office Hour on Friday 09:00 am - 10:00 am in Zoom](https://illinois.zoom.us/j/87274879340?pwd=alrCJW3Z5HxIAyl5nB4KKc0qGmfkDa.1)
 
@@ -333,7 +334,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week06"></a>Week 6 
 
-By now, we go even deeper in the weeds to understand R's S3 system and how to consider more than just coding results when it comes to programs. The reading materials are less coding heavy, except programs, but discuss important ideas about R's internal workings that help us understand what's underneath programs.
+By now, 07/21/2025 - 07/27/2025, we go even deeper in the weeds to understand R's S3 system and how to consider more than just coding results when it comes to programs. The reading materials are less coding heavy, except programs, but discuss important ideas about R's internal workings that help us understand what's underneath programs.
 
 The following are readings which will be helpful in first learning the course material for this week.
 
@@ -383,7 +384,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week07"></a>Week 7
 
-This is the penultimate week of the course. The readings are less coding intensive, but do challenge learners to think, be curious, and push the limits of their creativity. The human brain is capable of doing so many things. Have you considered how much your brain does even when you are asleep? Design, intentionm, and alignment are a part of what can be the difference between a good program and a great one. Learners are encouraged to ask questions, read and gather information, and make fun games for the final project.
+This is the penultimate week, 07/28/2025 - 08/03/2025, of the course. The readings are less coding intensive, but do challenge learners to think, be curious, and push the limits of their creativity. The human brain is capable of doing so many things. Have you considered how much your brain does even when you are asleep? Design, intentionm, and alignment are a part of what can be the difference between a good program and a great one. Learners are encouraged to ask questions, read and gather information, and make fun games for the final project.
 
 The following are readings which will be helpful in first learning the course material for this week.
 
@@ -425,7 +426,7 @@ Remember that the course staff, i.e. Professor Christopher Kinson and TA Lam Lam
 
 ## <a name="week08"></a>Week 8 
 
-This is the last week of the course. There is no new material for this week. Learners are encouraged to spend ample time working and fine-tuning their final projects for this course. Review the [final project guidelines and grading rubric](https://uofi.box.com/shared/static/e1eagifpaflrgv9sgkq9fgqd0wn6lc8x.md).
+This is the last week, 08/04/2025 - 08/10/2025, of the course. There is no new material for this week. Learners are encouraged to spend ample time working and fine-tuning their final projects for this course. Review the [final project guidelines and grading rubric](https://uofi.box.com/shared/static/e1eagifpaflrgv9sgkq9fgqd0wn6lc8x.md).
 
 We encourage students to watch the lecture videos below and review videos from all previous weeks.
 
