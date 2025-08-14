@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "New York Times Wrote About Our Work"
+title: "The New York Times Wrote About Our Work"
 author: "Christopher Kinson"
 categories: research
 tags: [ds, research]
